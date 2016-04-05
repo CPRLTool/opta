@@ -33,5 +33,5 @@ accounts-google
 templating
 blaze
 gadicc:blaze-react-component
-mdg:chromatic
 useraccounts:bootstrap
+gadicohen:phantomjs
