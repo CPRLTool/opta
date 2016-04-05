@@ -5,6 +5,7 @@ import { AccountsTemplates } from 'meteor/useraccounts:core';
 
 import MainLayout from '../../ui/layouts/main.jsx';
 import Home from '../../ui/components/home.jsx';
+import Authenticated from '../../ui/components/authenticated.jsx';
 // import Private from '../../ui/components/private.jsx';
 import NotFound from '../../ui/components/not_found.jsx';
 import Login from '../../ui/components/login.jsx';
@@ -30,6 +31,16 @@ authenticatedRoutes.route('/', {
     });
   },
 });
+
+authenticatedRoutes.route('/authenticated', {
+  name: 'auth',
+  action() {
+    mount(MainLayout, {
+      content: (<Authenticated />),
+    });
+  },
+});
+
 
 FlowRouter.notFound = {
   action() {

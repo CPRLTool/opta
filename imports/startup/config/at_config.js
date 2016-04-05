@@ -9,9 +9,9 @@ const postLogout = () => {
 const postSubmit = (error, state) => {
   if (!error) {
     if (state === 'signIn') {
-      FlowRouter.redirect('/');
+      FlowRouter.redirect('/authenticated');
     } else if (state === 'signUp') {
-      FlowRouter.redirect('/');
+      FlowRouter.redirect('/authenticated');
     }
   }
 };
