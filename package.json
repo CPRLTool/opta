@@ -1,0 +1,45 @@
+{
+  "name": "opta-tool",
+  "private": true,
+  "scripts": {
+    "start": "meteor run",
+    "lint": "eslint .",
+    "pretest": "npm run lint --silent"
+  },
+  "dependencies": {
+    "classnames": "^2.2.3",
+    "meteor-node-stubs": "~0.2.0",
+    "react": "^0.14.8",
+    "react-addons-pure-render-mixin": "^0.14.8",
+    "react-dom": "^0.14.8",
+    "react-komposer": "^1.7.1",
+    "react-mounter": "^1.1.0"
+  },
+  "devDependencies": {
+    "autosize": "^3.0.15",
+    "babel-eslint": "^6.0.2",
+    "enzyme": "^2.2.0",
+    "eslint": "^2.5.3",
+    "eslint-config-airbnb": "^6.2.0",
+    "eslint-plugin-meteor": "^3.4.0",
+    "eslint-plugin-react": "^4.2.3",
+    "react-addons-create-fragment": "^0.14.8",
+    "react-addons-css-transition-group": "^0.14.8",
+    "react-addons-linked-state-mixin": "^0.14.8",
+    "react-addons-perf": "^0.14.8",
+    "react-addons-test-utils": "^0.14.8",
+    "react-addons-transition-group": "^0.14.8",
+    "react-addons-update": "^0.14.8",
+    "react-input-autosize": "^0.6.10"
+  },
+  "eslintConfig": {
+    "plugins": [
+      "meteor"
+    ],
+    "extends": [
+      "airbnb/base",
+      "plugin:meteor/guide"
+    ],
+    "rules": {}
+  }
+}
