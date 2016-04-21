@@ -5,9 +5,12 @@ const Home = ({ currUser }) => (
   <div className="container">
     <div className="text-center">
       <h2>Welcome to Opta!</h2>
-      <p>
-        Please take a moment to update <a href={FlowRouter.path('user.profile', { username: currUser.username })}>your profile.</a>
-      </p>
+      { currUser
+        ? <p>
+          Please take a moment to update <a href={FlowRouter.path('user.profile', { username: currUser.username })}>your profile.</a>
+        </p>
+        : ''
+      }
     </div>
   </div>
 );

@@ -9,15 +9,19 @@ export default class UserProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      firstName: props.user.firstName || '',
-      lastName: props.user.lastName || '',
-      bio: props.user.bio || '',
+      firstName: props.user ? (props.user.firstName || '') : '',
+      lastName: props.user ? (props.user.lastName || '') : '',
+      bio: props.user ? (props.user.bio || '') : '',
       editing: false,
       isSubmitting: false,
     };
     this.handleFieldEdit = this.handleFieldEdit.bind(this);
     this.toggleSave = this.toggleSave.bind(this);
     this.handleSave = this.handleSave.bind(this);
+  }
+
+  isCurrUser() {
+    return this.props.currUser && this.props.user && this.props.currUser._id === this.props.user._id;
   }
 
   handleFieldEdit(event) {
@@ -73,7 +77,7 @@ export default class UserProfile extends Component {
 
   render() {
     const opts = {};
-    if (!this.props.isCurrUser || (this.props.isCurrUser && !this.state.editing)) {
+    if (!this.isCurrUser() || (this.isCurrUser() && !this.state.editing)) {
       opts.readOnly = 'readOnly';
     }
 
@@ -84,14 +88,14 @@ export default class UserProfile extends Component {
             <Image src="/images/avatar-placeholder.png" className="center-block" circle responsive  />
           </FormGroup>
           <FormGroup>
-            { this.props.isCurrUser ? this.renderEditButton() : ''}
+            { this.isCurrUser() ? this.renderEditButton() : ''}
           </FormGroup>
           <FormGroup controlId="username">
             <Col componentClass={ControlLabel} sm={2}>Username</Col>
             <Col sm={8}>
               <FormControl
                 type="text"
-                value={this.props.user.username}
+                value={this.props.user ? this.props.user.username : ''}
                 readOnly />
             </Col>
           </FormGroup>
@@ -100,7 +104,7 @@ export default class UserProfile extends Component {
             <Col sm={8}>
               <FormControl
                 type="text"
-                value={this.props.user.emails[0].address}
+                value={this.props.user ? this.props.user.emails[0].address : ''}
                 readOnly />
             </Col>
           </FormGroup>
@@ -142,5 +146,6 @@ export default class UserProfile extends Component {
 
 UserProfile.propTypes = {
   user: PropTypes.object.isRequired,
-  isCurrUser: PropTypes.bool.isRequired,
+  currUser: PropTypes.object.isRequired,
+  // isCurrUser: PropTypes.bool.isRequired,
 };

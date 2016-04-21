@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { profileFields } from '../users.js';
+import { profileFields, defaultFields } from '../users.js';
 
 Meteor.publish('Meteor.users.profileInfo', (username) => {
   // Validate the arguments to be what we expect
@@ -15,8 +15,15 @@ Meteor.publish('Meteor.users.profileInfo', (username) => {
 
   const options = {
     fields: profileFields,
-    // fields: { firstName: 1, lastName: 1, bio: 1 },
   };
 
   return Meteor.users.find(selector, options);
+});
+
+Meteor.publish('Meteor.users.defaultInfo', () => {
+  const options = {
+    fields: defaultFields,
+  };
+
+  return Meteor.users.find({}, options);
 });

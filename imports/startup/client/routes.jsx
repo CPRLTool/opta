@@ -75,8 +75,12 @@ FlowRouter.notFound = {
 FlowRouter.route('/user/:username', {
   name: 'user.profile',
   triggersEnter: [(context, redirect) => {
-    if (Meteor.users.find({ username: context.params.username }, { _id: 1 }).fetch().length === 0) {
-      redirect('/');
+    const handle = Meteor.subscribe('Meteor.users.defaultInfo');
+
+    if (handle.ready()) {
+      if (Meteor.users.find({ username: context.params.username }, { _id: 1 }).fetch().length === 0) {
+        redirect('/');
+      }
     }
   }],
   action(params) {
