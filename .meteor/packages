@@ -23,7 +23,6 @@ practicalmeteor:mocha
 practicalmeteor:chai
 reywood:publish-composite
 kadira:debug
-react-meteor-data
 aldeed:simple-schema
 dburles:collection-helpers
 twbs:bootstrap
@@ -34,3 +33,5 @@ templating
 blaze
 gadicc:blaze-react-component
 useraccounts:bootstrap
+msavin:mongol
+abiabsurd:flow-routing

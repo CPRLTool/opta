@@ -1,1 +1,1 @@
-import './at_config.js';
+import './at_config.jsx';

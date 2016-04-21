@@ -1,11 +1,12 @@
 import React from 'react';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 
-const Home = () => (
+const Home = ({ currUser }) => (
   <div className="container">
     <div className="text-center">
-      <h1>This is Opta!</h1>
+      <h2>Welcome to Opta!</h2>
       <p>
-        <a href="/login">Click Here</a> to sign in or register.
+        Please take a moment to update <a href={FlowRouter.path('user.profile', { username: currUser.username })}>your profile.</a>
       </p>
     </div>
   </div>
