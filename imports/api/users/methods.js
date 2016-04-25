@@ -5,17 +5,16 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 export const updateProfile = new ValidatedMethod({
   name: 'Meteor.users.updateProfile',
   validate: new SimpleSchema({
-    _id: { type: String },
     firstName: { type: String },
     lastName: { type: String },
     bio: { type: String },
   }).validator(),
-  run({ _id, firstName, lastName, bio }) {
-    if (Meteor.userId() !== _id) {
+  run({ firstName, lastName, bio }) {
+    if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
 
-    Meteor.users.update(_id, {
+    Meteor.users.update(this.userId, {
       $set: { firstName, lastName, bio },
     });
   },

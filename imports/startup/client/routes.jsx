@@ -9,6 +9,8 @@ import AppLayout from '../../ui/layouts/app.jsx';
 import Home from '../../ui/containers/home';
 import NotFound from '../../ui/components/not_found.jsx';
 import UserProfile from '../../ui/containers/user_profile';
+import CreateOrg from '../../ui/components/create_org.jsx';
+import OrgProfile from '../../ui/containers/org_profile';
 
 // UserAccounts Routes
 FlowRouter.triggers.enter([AccountsTemplates.ensureSignedIn]);
@@ -89,3 +91,22 @@ FlowRouter.route('/user/:username', {
     });
   },
 });
+
+FlowRouter.route('/organization/create', {
+  name: 'organization.create',
+  action() {
+    mount(AppLayout, {
+      main: <CreateOrg />,
+    });
+  },
+});
+
+FlowRouter.route('/organization/:name', {
+  name: 'organization.profile',
+  action(params) {
+    mount(AppLayout, {
+      main: <OrgProfile name={params.name} />,
+    });
+  },
+});
+

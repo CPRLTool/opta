@@ -1,48 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 // import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Organizations } from '../organizations/organizations.js';
+import { EasySearch } from 'meteor/easy:search';
 
 // Deny all client-side updates to user documents
 Meteor.users.deny({
   update() { return true; },
 });
-
-// Schema.UserProfile = new SimpleSchema({
-//     firstName: {
-//         type: String,
-//         optional: true
-//     },
-//     lastName: {
-//         type: String,
-//         optional: true
-//     },
-//     birthday: {
-//         type: Date,
-//         optional: true
-//     },
-//     gender: {
-//         type: String,
-//         allowedValues: ['Male', 'Female'],
-//         optional: true
-//     },
-//     organization : {
-//         type: String,
-//         optional: true
-//     },
-//     website: {
-//         type: String,
-//         regEx: SimpleSchema.RegEx.Url,
-//         optional: true
-//     },
-//     bio: {
-//         type: String,
-//         optional: true
-//     },
-//     country: {
-//         type: Schema.UserCountry,
-//         optional: true
-//     }
-// });
 
 const userSchema = new SimpleSchema({
   username: {
@@ -126,6 +91,14 @@ const userSchema = new SimpleSchema({
     type: String,
     optional: true,
   },
+  // organizations: {
+  //   type: [String],
+  //   optional: true,
+  // },
+  // 'organizations.$': {
+  //   type: String,
+  //   regEx: SimpleSchema.RegEx.Id,
+  // },
 });
 
 Meteor.users.attachSchema(userSchema);
@@ -134,9 +107,24 @@ export const profileFields = {
   firstName: 1,
   lastName: 1,
   bio: 1,
+  organizations: 1,
 };
 
 export const defaultFields = {
   username: 1,
   emails: 1,
 };
+
+Meteor.users.helpers({
+  organizations() {
+    // return Meteor.users.find({ organizations: { $elemMatch: { $eq: this._id } } });
+
+    return Organizations.find({ members: { $elemMatch: { id: this._id } } });
+  },
+});
+
+export const UsersIndex = new EasySearch.Index({
+  collection: Meteor.users,
+  fields: ['username', 'emails'],
+  engine: new EasySearch.MongoTextIndex(),
+});

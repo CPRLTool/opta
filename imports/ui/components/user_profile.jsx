@@ -39,19 +39,20 @@ export default class UserProfile extends Component {
     event.preventDefault();
 
     const params = {
-      _id: this.props.user._id,
       firstName: this.state.firstName,
       lastName: this.state.lastName,
       bio: this.state.bio,
     };
 
-    updateProfile.call(params, (err, res) => {
-      if (err) {
-        alert(err);
-      } else {
-        // console.log(res);
-      }
-    });
+    // updateProfile.call(params, (err, res) => {
+    //   if (err) {
+    //     alert(err);
+    //   } else {
+    //     console.log(res);
+    //   }
+    // });
+    updateProfile.call(params);
+
 
     this.setState({ editing: false, isSubmitting: false });
   }
@@ -85,7 +86,7 @@ export default class UserProfile extends Component {
       <div className="container">
         <Form horizontal>
           <FormGroup controlId="formAvatar">
-            <Image src="/images/avatar-placeholder.png" className="center-block" circle responsive  />
+            <Image src="/images/avatar_placeholder.png" className="center-block" circle responsive  />
           </FormGroup>
           <FormGroup>
             { this.isCurrUser() ? this.renderEditButton() : ''}
