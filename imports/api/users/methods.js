@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
+// import { SearchUsersIndex } from './users.js';
+
 export const updateProfile = new ValidatedMethod({
   name: 'Meteor.users.updateProfile',
   validate: new SimpleSchema({
@@ -20,14 +22,12 @@ export const updateProfile = new ValidatedMethod({
   },
 });
 
-export const searchUsers = new ValidatedMethod({
-  name: 'Meteor.users.search',
-  validate: new SimpleSchema({
-    searchString: { type: String },
-  }).validator(),
-  run({ searchString }) {
-    return searchString
-      ? Meteor.users.find({}, { sort: [['score', 'desc']] })
-      : Meteor.users.find({});
-  },
-});
+// export const searchUsers = new ValidatedMethod({
+//   name: 'Meteor.users.search',
+//   validate: new SimpleSchema({
+//     searchString: { type: String },
+//   }).validator(),
+//   run({ searchString }) {
+//     return SearchUsersIndex.search(searchString, { limit: 6 }).fetch();
+//   },
+// });

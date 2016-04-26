@@ -1,55 +1,63 @@
 import React, { Component, PropTypes } from 'react';
-import { Form, Row, Col, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
+import { Row, FormGroup, FormControl, ControlLabel, HelpBlock } from 'react-bootstrap';
 import EntityThumbnail from './entity_thumbnail.jsx';
 
-import { searchUsers } from '../../api/users/methods.js';
+import { SearchUsersIndex } from '../../api/users/users.js';
 
 // import { debounce } from 'lodash';
-
 
 export default class SearchUser extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      isSubmitting: false,
       searchString: '',
-      selectedUser: null,
+      searchResults: null,
     };
     this.handleChange = this.handleChange.bind(this);
     this.selectUser = this.selectUser.bind(this);
-    // this.onSubmit = this.onSubmit.bind(this);
+    // this.onSelectUser = this.props.onSelectUser.bind(this);
+    this.searchUsers = this.searchUsers.bind(this);
+    this.renderUserThumbnail = this.renderUserThumbnail.bind(this);
+  }
+
+  searchUsers(searchString) {
+    return SearchUsersIndex.search(searchString).fetch();
   }
 
   handleChange(event) {
     event.preventDefault();
-    this.setState({ searchString: event.target.value });
+
+    this.setState({
+      searchString: event.target.value,
+      searchResults: this.searchUsers(event.target.value),
+    });
   }
 
-  // onSubmit(event) {
+  // selectUser(event) {
   //   event.preventDefault();
+  //   // send selected user's username to parent component via callback
+  //   this.props.onSelectUser(event.target.name);
   // }
 
-  getSearchResults() {
-    // callback subscription to search
-    this.props.searchSub(this.state.searchString);
-    // now call search method
-    return searchUsers.call({ searchString: this.state.searchString });
+  selectUser(userId) {
+    return (event) => {
+      event.preventDefault();
+      // send selected user's username to parent component via callback
+      this.props.onSelectUser(userId);
+    };
   }
 
-  selectUser(event) {
-    event.preventDefault();
-    // send selected user's username to parent component via callback
-    this.props.onSelectUser(event.target.name);
-  }
-
-  renderUserThumbnails(user) {
+  renderUserThumbnail(user) {
     return (
       <EntityThumbnail
         key={user.username}
         imgLink="/images/avatar_placeholder_thumbnail.png"
         name={user.username}
-        onClick={this.selectUser}
+        // onClick={this.selectUser}
+        onClick={this.selectUser(user._id)}
+        disabled={!user.selectable}
+        // data-id={user._id}
       />
     );
   }
@@ -57,40 +65,24 @@ export default class SearchUser extends Component {
   render() {
     return (
       <div>
-        <Form>
-          <FormGroup controlId="searchString">
-            <ControlLabel>Search by username or email</ControlLabel>
-            <FormControl
-              type="text"
-              value={this.state.searchString}
-              placeholder="e.g. jonsnow"
-              onChange={this.handleChange}
-              // onChange={debounce(this.handleChange, 300)}
-            />
-          </FormGroup>
-          <Row>
-            { this.getSearchResults().map(this.renderUserThumbnails) }
-          </Row>
-          {/*
-          <FormGroup controlId="submitSearchUser">
-            <Button
-              type="submit"
-              className="center-block"
-              disabled={this.state.isSubmitting}
-              onClick={!this.state.isSubmitting ? this.onSubmit : null}
-              bsStyle="success">
-                {this.state.isSubmitting ? 'Submitting...' : 'Select User'}
-            </Button>
-          </FormGroup>
-          */}
-
-        </Form>
+        <FormGroup controlId="searchBox">
+          <ControlLabel>Search by username or email</ControlLabel>
+          <FormControl
+            type="text"
+            value={this.state.searchString}
+            placeholder="e.g. jonsnow"
+            onChange={this.handleChange}
+          />
+          <HelpBlock>Click a user below to select.</HelpBlock>
+        </FormGroup>
+        <Row>
+          { this.state.searchResults ? this.state.searchResults.map(this.renderUserThumbnail) : '' }
+        </Row>
       </div>
     );
   }
 }
 
 SearchUser.propTypes = {
-  searchSub: PropTypes.func.isRequired,
   onSelectUser: PropTypes.func.isRequired,
 };

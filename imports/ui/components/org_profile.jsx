@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { Image, Form, Row, Col, FormGroup, FormControl, ControlLabel, Button, Modal } from 'react-bootstrap';
 import EntityThumbnail from './entity_thumbnail.jsx';
-import SearchUser from '../containers/search_user.js';
+import SearchUser from '../containers/org_invite_search_user.js';
 
 import { updateProfile } from '../../api/organizations/methods.js';
-import { inviteMember } from '../../api/users/methods.js';
+import { inviteMember } from '../../api/organizations/methods.js';
 
 export default class OrgProfile extends Component {
 
@@ -57,15 +57,17 @@ export default class OrgProfile extends Component {
   toggleSearchUser(event) {
     if (event) {
       event.preventDefault();
-    };
+    }
     this.setState({ showModal: !this.state.showModal });
   }
 
 
-  handleInvite(usernameToInvite) {
+  // handleInvite(usernameToInvite) {
+  handleInvite(inviteeId) {
     const fields = {
       _id: this.props.org._id,
-      username: usernameToInvite,
+      // username: usernameToInvite,
+      inviteeId,
     };
 
     inviteMember.call(fields);
@@ -162,7 +164,7 @@ export default class OrgProfile extends Component {
             <Modal.Title>Search for User</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <SearchUser onSelectUser={this.handleInvite} />
+            <SearchUser org={this.props.org} onSelectUser={this.handleInvite} />
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.toggleSearchUser}>Close</Button>

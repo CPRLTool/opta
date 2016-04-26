@@ -38,6 +38,10 @@ Organizations.deny({
 });
 
 Organizations.schema = new SimpleSchema({
+  _id: {
+    type: String,
+    regEx: SimpleSchema.RegEx.Id,
+  },
   name: {
     type: String,
     index: true,

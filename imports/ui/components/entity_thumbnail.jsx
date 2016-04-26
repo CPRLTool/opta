@@ -1,8 +1,8 @@
 import React from 'react';
 import { Image, Col, Button } from 'react-bootstrap';
 
-const EntityThumbnail = ({ imgLink, name, onClick }) => {
-  const props = {};
+const EntityThumbnail = ({ imgLink, name, onClick, disabled }) => {
+  const props = { disabled };
   if (typeof(onClick) === 'string') {
     // it's a link
     props.href = onClick;
@@ -11,25 +11,14 @@ const EntityThumbnail = ({ imgLink, name, onClick }) => {
     props.onClick = onClick;
   }
 
-  // return (
-  //   <Col xs={6} sm={4} md={3}>
-  //     <Thumbnail src={ imgLink }>
-  //       <div className="text-center">
-  //         <Button bsStyle="link" {...props} >
-  //           <h5>{ name }</h5>
-  //         </Button>
-  //       </div>
-  //     </Thumbnail>
-  //   </Col>
-  // );
   return (
     <Col xs={6} sm={3} md={2}>
-      <Image src={ imgLink } className="center-block" rounded />
-      <div className="text-center">
-        <Button bsStyle="link" {...props} >
-          <h5>{ name }</h5>
-        </Button>
-      </div>
+      <Button bsStyle="link" block {...props} >
+        <Image src={ imgLink } className="center-block" rounded />
+        <div className="text-center">
+            <h5>{ name }</h5>
+        </div>
+      </Button>
     </Col>
   );
 };

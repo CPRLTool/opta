@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 // import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Organizations } from '../organizations/organizations.js';
-// import { EasySearch } from 'meteor/easy:search';
+import { EasySearch } from 'meteor/easy:search';
 
 // Deny all client-side updates to user documents
 Meteor.users.deny({
@@ -10,6 +10,10 @@ Meteor.users.deny({
 });
 
 const userSchema = new SimpleSchema({
+  _id: {
+    type: String,
+    regEx: SimpleSchema.RegEx.Id,
+  },
   username: {
     type: String,
     // For accounts-password, either emails or username is required, but not both. It is OK to make this
@@ -121,8 +125,26 @@ Meteor.users.helpers({
   },
 });
 
-// export const UsersIndex = new EasySearch.Index({
-//   collection: Meteor.users,
-//   fields: ['username', 'emails'],
-//   engine: new EasySearch.MongoTextIndex(),
-// });
+export const SearchUsersIndex = new EasySearch.Index({
+  collection: Meteor.users,
+  fields: ['username', 'emails'],
+  selectorPerField: (field, searchString) => {
+    if (field === 'emails') {
+      // return this selector if the email field is being searched
+      return {
+        emails: {
+          $elemMatch: {
+            address: {
+              $regex: `.*${searchString}.*`,
+              $options: 'i',
+            },
+          },
+        },
+      };
+    }
+
+    // use the default otherwise
+    return this.defaultConfiguration().selectorPerField(field, searchString);
+  },
+  engine: new EasySearch.Minimongo(),
+});

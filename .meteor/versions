@@ -58,6 +58,9 @@ launch-screen@1.0.11
 livedata@1.0.18
 localstorage@1.0.9
 logging@1.0.12
+maximum:package-base@1.1.2
+maximum:reactive-cursors@0.2.0
+maximum:server-transform@0.4.1
 mdg:validated-method@1.1.0
 mdg:validation-error@0.5.1
 meteor@1.1.14
@@ -87,7 +90,9 @@ peerlibrary:base-component@0.14.0
 peerlibrary:blaze-components@0.16.2
 peerlibrary:computed-field@0.3.1
 peerlibrary:data-lookup@0.1.0
+peerlibrary:fiber-utils@0.5.1
 peerlibrary:reactive-field@0.1.0
+peerlibrary:server-autorun@0.5.1
 percolate:migrations@0.9.8
 practicalmeteor:chai@2.1.0_1
 practicalmeteor:loglevel@1.2.0_2

@@ -1,7 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { check } from 'meteor/check';
 
-import { profileFields, defaultFields, UsersIndex } from '../users.js';
+import { profileFields, defaultFields } from '../users.js';
+
+import { Organizations } from '../../organizations/organizations.js';
 
 // Meteor.publish('Meteor.users.profileInfo', (searchString) => {
 //   // Validate the arguments to be what we expect
@@ -46,6 +49,63 @@ Meteor.publish('Meteor.users.defaultInfo', () =>
   Meteor.users.find({}, { fields: defaultFields })
 );
 
+Meteor.publishTransformed('Meteor.users.searchToInviteToOrg', (org) => {
+  check(org, Organizations.schema);
+
+  // put member Ids into object for easy membership verification
+  const memberIds = {};
+  for (let i = 0, l = org.members.length; i < l; i++) {
+    memberIds[org.members[i].id] = true;
+  }
+
+  return Meteor.users.find({}, { fields: defaultFields }).serverTransform({
+    // extend the document with the custom property 'selectable'
+    // which checks if user is member of org
+    selectable: user => !(user._id in memberIds),
+  });
+});
+
+// Meteor.publish('Meteor.users.searchToInviteToOrg', (orgId) => {
+//   new SimpleSchema({
+//     orgId: { type: String, regEx: SimpleSchema.RegEx.Id },
+//   }).validate({ orgId });
+
+//   const org = Organizations.findOne({ _id: orgId });
+//   // put member Ids into object for easy membership verification
+//   const memberIds = {};
+//   for (let i = 0, l = org.members.length; i < l; i++) {
+//     memberIds[org.members[i].id] = true;
+//   }
+
+//   // check if user is member of org
+//   const transform = (doc) => {
+//     const newDoc = doc;
+//     newDoc.selectable = doc._id in memberIds;
+//     return newDoc;
+//   };
+
+//   const self = this;
+
+//   const observer = Meteor.users.find({}, { fields: defaultFields }).observe({
+//     added: (document) => {
+//       self.added('Meteor.users', document._id, transform(document));
+//     },
+//     changed: (newDocument, oldDocument) => {
+//       self.changed('Meteor.users', newDocument._id, transform(newDocument));
+//     },
+//     removed: (oldDocument) => {
+//       self.removed('Meteor.users', oldDocument._id);
+//     },
+//   });
+
+//   self.onStop(() => {
+//     observer.stop();
+//   });
+
+//   self.ready();
+// });
+
+
 // Meteor.publish('Meteor.users.search', (searchString) => {
 //   new SimpleSchema({
 //     searchString: { type: String },
@@ -56,27 +116,3 @@ Meteor.publish('Meteor.users.defaultInfo', () =>
 //   //   : Meteor.users.find({}, { fields: defaultFields });
 //   return UsersIndex.search(searchString, { limit: 6 }).mongoCursor;
 // });
-
-Meteor.publish('Meteor.users.search', (searchString) => {
-  new SimpleSchema({
-    searchString: { type: String },
-  }).validate({ searchString });
-
-  return searchString
-    ? Meteor.users.find(
-      { $text: { $search: searchString } },
-      {
-        fields: {
-          score: {
-            $meta: 'textScore',
-          },
-        },
-        sort: {
-          score: {
-            $meta: 'textScore',
-          },
-        },
-      }
-    ).limit(6)
-    : Meteor.users.find().limit(6);
-});
