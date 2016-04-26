@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 // import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Organizations } from '../organizations/organizations.js';
-import { EasySearch } from 'meteor/easy:search';
+// import { EasySearch } from 'meteor/easy:search';
 
 // Deny all client-side updates to user documents
 Meteor.users.deny({
@@ -117,14 +117,12 @@ export const defaultFields = {
 
 Meteor.users.helpers({
   organizations() {
-    // return Meteor.users.find({ organizations: { $elemMatch: { $eq: this._id } } });
-
     return Organizations.find({ members: { $elemMatch: { id: this._id } } });
   },
 });
 
-export const UsersIndex = new EasySearch.Index({
-  collection: Meteor.users,
-  fields: ['username', 'emails'],
-  engine: new EasySearch.MongoTextIndex(),
-});
+// export const UsersIndex = new EasySearch.Index({
+//   collection: Meteor.users,
+//   fields: ['username', 'emails'],
+//   engine: new EasySearch.MongoTextIndex(),
+// });

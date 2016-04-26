@@ -1,6 +1,8 @@
-import { Meteor } from 'meteor/meteor';
+// import { Meteor } from 'meteor/meteor';
 import React, { Component, PropTypes } from 'react';
-import { Image, Form, Col, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
+
+import { Image, Form, Row, Col, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
+import EntityThumbnail from './entity_thumbnail.jsx';
 
 import { updateProfile } from '../../api/users/methods.js';
 
@@ -76,6 +78,17 @@ export default class UserProfile extends Component {
         </Button>;
   }
 
+  renderOrgThumbnails(org) {
+    return (
+      <EntityThumbnail
+        key={org.name}
+        imgLink="/images/org_logo_placeholder_thumbnail.png"
+        name={org.name}
+        onClick={`/organization/${org.name}`}
+      />
+    );
+  }
+
   render() {
     const opts = {};
     if (!this.isCurrUser() || (this.isCurrUser() && !this.state.editing)) {
@@ -86,10 +99,7 @@ export default class UserProfile extends Component {
       <div className="container">
         <Form horizontal>
           <FormGroup controlId="formAvatar">
-            <Image src="/images/avatar_placeholder.png" className="center-block" circle responsive  />
-          </FormGroup>
-          <FormGroup>
-            { this.isCurrUser() ? this.renderEditButton() : ''}
+            <Image src="/images/avatar_placeholder.png" className="center-block" rounded responsive />
           </FormGroup>
           <FormGroup controlId="username">
             <Col componentClass={ControlLabel} sm={2}>Username</Col>
@@ -139,7 +149,17 @@ export default class UserProfile extends Component {
                 {...opts} />
             </Col>
           </FormGroup>
+          <FormGroup>
+            { this.isCurrUser() ? this.renderEditButton() : ''}
+          </FormGroup>
         </Form>
+        <hr />
+        <div className="text-center">
+          <h4>Organizations</h4>
+        </div>
+        <Row>
+          { this.props.user.organizations().map(this.renderOrgThumbnails) }
+        </Row>
       </div>
     );
   }
@@ -148,5 +168,4 @@ export default class UserProfile extends Component {
 UserProfile.propTypes = {
   user: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
-  // isCurrUser: PropTypes.bool.isRequired,
 };

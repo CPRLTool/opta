@@ -1,8 +1,10 @@
-import { Meteor } from 'meteor/meteor';
 import React, { Component, PropTypes } from 'react';
-import { Image, Form, Col, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
+import { Image, Form, Row, Col, FormGroup, FormControl, ControlLabel, Button, Modal } from 'react-bootstrap';
+import EntityThumbnail from './entity_thumbnail.jsx';
+import SearchUser from '../containers/search_user.js';
 
 import { updateProfile } from '../../api/organizations/methods.js';
+import { inviteMember } from '../../api/users/methods.js';
 
 export default class OrgProfile extends Component {
 
@@ -13,14 +15,20 @@ export default class OrgProfile extends Component {
       about: props.org ? (props.org.about || '') : '',
       editing: false,
       isSubmitting: false,
+      showModal: false,
+      searchUser: '',
     };
     this.handleFieldEdit = this.handleFieldEdit.bind(this);
     this.toggleSave = this.toggleSave.bind(this);
     this.handleSave = this.handleSave.bind(this);
+    this.toggleSearchUser = this.toggleSearchUser.bind(this);
+    this.handleInvite = this.handleInvite.bind(this);
   }
 
   isAdmin() {
-    return this.props.org && this.props.currUser && this.props.org.editableBy(this.props.currUser._id);
+    return this.props.org
+      && this.props.currUser
+      && this.props.org.editableBy(this.props.currUser._id);
   }
 
   handleFieldEdit(event) {
@@ -46,6 +54,25 @@ export default class OrgProfile extends Component {
     this.setState({ editing: false, isSubmitting: false });
   }
 
+  toggleSearchUser(event) {
+    if (event) {
+      event.preventDefault();
+    };
+    this.setState({ showModal: !this.state.showModal });
+  }
+
+
+  handleInvite(usernameToInvite) {
+    const fields = {
+      _id: this.props.org._id,
+      username: usernameToInvite,
+    };
+
+    inviteMember.call(fields);
+
+    this.setState({ showModal: false });
+  }
+
   renderEditButton() {
     const isSub = this.state.isSubmitting;
     return this.state.editing
@@ -65,6 +92,28 @@ export default class OrgProfile extends Component {
         </Button>;
   }
 
+  renderUserThumbnails(user) {
+    return (
+      <EntityThumbnail
+        key={user.username}
+        imgLink="/images/avatar_placeholder_thumbnail.png"
+        name={user.username}
+        onClick={`/user/${user.username}`}
+      />
+    );
+  }
+
+  renderInviteButton() {
+    return (
+      <EntityThumbnail
+        key="add_member"
+        imgLink="/images/add_member.png"
+        name="Add Member..."
+        onClick={this.toggleSearchUser}
+      />
+    );
+  }
+
   render() {
     const opts = {};
     if (!this.isAdmin() || (this.isAdmin() && !this.state.editing)) {
@@ -75,10 +124,7 @@ export default class OrgProfile extends Component {
       <div className="container">
         <Form horizontal>
           <FormGroup controlId="formAvatar">
-            <Image src="/images/org_logo_placeholder.png" className="center-block" rounded responsive  />
-          </FormGroup>
-          <FormGroup>
-            { this.isAdmin() ? this.renderEditButton() : ''}
+            <Image src="/images/org_logo_placeholder.png" className="center-block" rounded responsive />
           </FormGroup>
           <FormGroup controlId="username">
             <Col componentClass={ControlLabel} sm={2}>Name</Col>
@@ -99,7 +145,29 @@ export default class OrgProfile extends Component {
                 {...opts} />
             </Col>
           </FormGroup>
+          <FormGroup controlId="editAndSave">
+            { this.isAdmin() ? this.renderEditButton() : '' }
+          </FormGroup>
         </Form>
+        <hr />
+        <div className="text-center">
+          <h4>Members</h4>
+        </div>
+        <Row>
+          { this.props.org.users().map(this.renderUserThumbnails) }
+          { this.isAdmin() ? this.renderInviteButton() : '' }
+        </Row>
+        <Modal show={this.state.showModal} onHide={this.toggleSearchUser}>
+          <Modal.Header closeButton>
+            <Modal.Title>Search for User</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <SearchUser onSelectUser={this.handleInvite} />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.toggleSearchUser}>Close</Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }
@@ -108,4 +176,5 @@ export default class OrgProfile extends Component {
 OrgProfile.propTypes = {
   org: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  searchSub: PropTypes.func,
 };

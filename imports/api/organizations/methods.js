@@ -65,17 +65,12 @@ export const inviteMember = new ValidatedMethod({
   name: 'organizations.inviteMember',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-    userId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    username: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
-  run({ _id, userId }) {
+  run({ _id, username }) {
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
-
-    // if (!Meteor.users.findOne({ _id: userId })) {
-    //   throw new Meteor.Error('organizations.inviteMember.userDoesNotExist',
-    //     'Given user does not exist.');
-    // }
 
     const org = Organizations.findOne({ _id });
 
@@ -89,9 +84,16 @@ export const inviteMember = new ValidatedMethod({
         'You do not have admin priveleges for this organization.');
     }
 
+    const user = Meteor.users.findOne({ username });
+
+    if (!user) {
+      throw new Meteor.Error('organizations.inviteMember.userDoesNotExist',
+        'Given user does not exist.');
+    }
+
     Organizations.update(
       { _id },
-      { $push: { members: { id: userId, isAdmin: false } } }
+      { $push: { members: { id: user._id, isAdmin: false } } }
     );
   },
 });
