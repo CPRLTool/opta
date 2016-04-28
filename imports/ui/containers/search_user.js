@@ -3,14 +3,14 @@ import { composeWithTracker } from 'react-komposer';
 
 import SearchUser from '../components/search_user.jsx';
 
+import { search } from '../actions/users';
+
 function composer(props, onData) {
   const handle = Meteor.subscribe('Meteor.users.searchToInviteToOrg', props.org);
 
   if (handle.ready()) {
     const data = {
-      // searchSub(searchString) {
-      //   Meteor.subscribe('Meteor.users.search', searchString);
-      // },
+      search,
       onSelectUser: props.onSelectUser,
     };
     onData(null, data);

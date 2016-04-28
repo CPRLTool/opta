@@ -17,6 +17,7 @@
     "react-dom": "^0.14.8",
     "react-komposer": "^1.7.1",
     "react-mounter": "^1.1.0",
+    "react-s-alert": "^1.1.2",
     "react-time": "^4.0.2",
     "slug": "^0.9.1",
     "system": "^1.0.4",

@@ -12,7 +12,7 @@ const EntityThumbnail = ({ imgLink, name, onClick, disabled }) => {
   }
 
   return (
-    <Col xs={6} sm={3} md={2}>
+    <Col xs={6} sm={4} md={3}>
       <Button bsStyle="link" block {...props} >
         <Image src={ imgLink } className="center-block" rounded />
         <div className="text-center">

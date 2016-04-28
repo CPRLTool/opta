@@ -1,9 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import React, { Component, PropTypes } from 'react';
 import { Form, Col, FormGroup, FormControl, ControlLabel, Button, HelpBlock } from 'react-bootstrap';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 
-import { create } from '../../api/organizations/methods.js';
+import SearchOrg from '../containers/search_org';
 
 export default class CreateOrg extends Component {
 
@@ -11,35 +10,31 @@ export default class CreateOrg extends Component {
     super(props);
     this.state = {
       name: '',
-      errorProp: {},
-      helpText: 'Choose a name unique to the OPTA system.',
+      hasError: false,
+      clearErrorTimeout: null,
     };
-    this.handleFieldEdit = this.handleFieldEdit.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleFieldEdit(event) {
-    event.preventDefault();
-    const id = event.target.id;
-    this.setState({ [id]: event.target.value });
+    this.setName = this.setName.bind(this);
   }
 
   handleSubmit(event) {
-    event.preventDefault();
-    const fields = {
-      name: this.state.name,
-    };
-    create.call(fields, (err, res) => {
-      if (err) {
-        console.log(err);
-        this.setState({
-          errorProp: { validationState: 'error' },
-          helpText: 'Name already exists.',
-        });
-      } else {
-        FlowRouter.go(`/organization/${this.state.name}`);
-      }
-    });
+    if (event && event.preventDefault) {
+      event.preventDefault();
+    }
+    const success = this.props.create({ name: this.state.name });
+
+    if (success === false) {
+      this.setState({
+        hasError: true,
+        clearErrorTimeout: setTimeout(() => this.setState({
+          hasError: false,
+        }), 3333),
+      });
+    }
+  }
+
+  setName(searchString) {
+    this.setState({ name: searchString });
   }
 
   render() {
@@ -51,17 +46,13 @@ export default class CreateOrg extends Component {
               <h3>Create an Organization</h3>
             </div>
           </FormGroup>
-          <FormGroup controlId="name" {...this.state.errorProp} >
-            <Col componentClass={ControlLabel} sm={2}>Name</Col>
-            <Col sm={8}>
-              <FormControl
-                type="text"
-                value={this.state.name}
-                onChange={this.handleFieldEdit} />
-              <FormControl.Feedback />
-              <HelpBlock>{this.state.helpText}</HelpBlock>
-            </Col>
-          </FormGroup>
+          <SearchOrg
+            setSearchString={this.setName}
+            onSelectOrg={this.props.selectOrgFromSearchToCreate}
+            hasError={this.state.hasError}
+            // errorProp={this.state.errorProp}
+          />
+          <FormGroup>
             <Button
               type="submit"
               className="center-block"
@@ -69,8 +60,19 @@ export default class CreateOrg extends Component {
               bsStyle="success">
                 Create
             </Button>
+          </FormGroup>
         </Form>
       </div>
     );
   }
+
+  componentWillUnmount() {
+    clearTimeout(this.state.clearErrorTimeout);
+  }
+
 }
+
+CreateOrg.propTypes = {
+  create: PropTypes.func.isRequired,
+  selectOrgFromSearchToCreate: PropTypes.func.isRequired,
+};

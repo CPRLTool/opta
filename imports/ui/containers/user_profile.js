@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { composeWithTracker } from 'react-komposer';
 
 import UserProfile from '../components/user_profile.jsx';
+import { updateProfile } from '../actions/users';
 
 function composer(props, onData) {
   const currUser = Meteor.user();
@@ -12,7 +13,7 @@ function composer(props, onData) {
 
   if (handle.ready()) {
     const user = Meteor.users.findOne({ username: props.username });
-    onData(null, { user, currUser });
+    onData(null, { user, currUser, updateProfile });
   }
 }
 

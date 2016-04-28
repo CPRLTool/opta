@@ -1,10 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Image, Form, Row, Col, FormGroup, FormControl, ControlLabel, Button, Modal } from 'react-bootstrap';
 import EntityThumbnail from './entity_thumbnail.jsx';
-import SearchUser from '../containers/org_invite_search_user.js';
-
-import { updateProfile } from '../../api/organizations/methods.js';
-import { inviteMember } from '../../api/organizations/methods.js';
+import SearchUser from '../containers/search_user';
 
 export default class OrgProfile extends Component {
 
@@ -32,45 +29,45 @@ export default class OrgProfile extends Component {
   }
 
   handleFieldEdit(event) {
-    event.preventDefault();
+    if (event && event.preventDefault) {
+      event.preventDefault();
+    }
     const id = event.target.id;
     this.setState({ [id]: event.target.value });
   }
 
   toggleSave(event) {
-    event.preventDefault();
+    if (event && event.preventDefault) {
+      event.preventDefault();
+    }
     this.setState({ editing: !this.state.editing });
   }
 
   handleSave(event) {
-    event.preventDefault();
+    if (event && event.preventDefault) {
+      event.preventDefault();
+    }
 
-    const fields = {
+    this.props.updateProfile({
       _id: this.props.org._id,
       about: this.state.about,
-    };
-    updateProfile.call(fields);
+    });
 
     this.setState({ editing: false, isSubmitting: false });
   }
 
   toggleSearchUser(event) {
-    if (event) {
+    if (event && event.preventDefault) {
       event.preventDefault();
     }
     this.setState({ showModal: !this.state.showModal });
   }
 
-
-  // handleInvite(usernameToInvite) {
-  handleInvite(inviteeId) {
-    const fields = {
-      _id: this.props.org._id,
-      // username: usernameToInvite,
-      inviteeId,
-    };
-
-    inviteMember.call(fields);
+  handleInvite(user) {
+    this.props.inviteMember({
+      org: this.props.org,
+      user,
+    });
 
     this.setState({ showModal: false });
   }
@@ -142,6 +139,7 @@ export default class OrgProfile extends Component {
             <Col sm={8}>
               <FormControl
                 componentClass="textarea"
+                style={{ height: 120, resize: 'none' }}
                 value={this.state.about}
                 onChange={this.handleFieldEdit}
                 {...opts} />
@@ -178,5 +176,6 @@ export default class OrgProfile extends Component {
 OrgProfile.propTypes = {
   org: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
-  searchSub: PropTypes.func,
+  updateProfile: PropTypes.func,
+  inviteMember: PropTypes.func,
 };

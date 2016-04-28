@@ -4,7 +4,6 @@ import React, { Component, PropTypes } from 'react';
 import { Image, Form, Row, Col, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
 import EntityThumbnail from './entity_thumbnail.jsx';
 
-import { updateProfile } from '../../api/users/methods.js';
 
 export default class UserProfile extends Component {
 
@@ -27,34 +26,30 @@ export default class UserProfile extends Component {
   }
 
   handleFieldEdit(event) {
-    event.preventDefault();
+    if (event && event.preventDefault) {
+      event.preventDefault();
+    }
     const id = event.target.id;
     this.setState({ [id]: event.target.value });
   }
 
   toggleSave(event) {
-    event.preventDefault();
+    if (event && event.preventDefault) {
+      event.preventDefault();
+    }
     this.setState({ editing: !this.state.editing });
   }
 
   handleSave(event) {
-    event.preventDefault();
+    if (event && event.preventDefault) {
+      event.preventDefault();
+    }
 
-    const params = {
+    this.props.updateProfile({
       firstName: this.state.firstName,
       lastName: this.state.lastName,
       bio: this.state.bio,
-    };
-
-    // updateProfile.call(params, (err, res) => {
-    //   if (err) {
-    //     alert(err);
-    //   } else {
-    //     console.log(res);
-    //   }
-    // });
-    updateProfile.call(params);
-
+    });
 
     this.setState({ editing: false, isSubmitting: false });
   }
@@ -144,6 +139,7 @@ export default class UserProfile extends Component {
             <Col sm={8}>
               <FormControl
                 componentClass="textarea"
+                style={{ height: 120, resize: 'none' }}
                 value={this.state.bio}
                 onChange={this.handleFieldEdit}
                 {...opts} />
@@ -168,4 +164,5 @@ export default class UserProfile extends Component {
 UserProfile.propTypes = {
   user: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  updateProfile: PropTypes.func.isRequired,
 };

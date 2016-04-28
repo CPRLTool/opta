@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 // import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+
 import { Organizations } from '../organizations/organizations.js';
 import { EasySearch } from 'meteor/easy:search';
 
@@ -127,24 +128,7 @@ Meteor.users.helpers({
 
 export const SearchUsersIndex = new EasySearch.Index({
   collection: Meteor.users,
-  fields: ['username', 'emails'],
-  selectorPerField: (field, searchString) => {
-    if (field === 'emails') {
-      // return this selector if the email field is being searched
-      return {
-        emails: {
-          $elemMatch: {
-            address: {
-              $regex: `.*${searchString}.*`,
-              $options: 'i',
-            },
-          },
-        },
-      };
-    }
-
-    // use the default otherwise
-    return this.defaultConfiguration().selectorPerField(field, searchString);
-  },
+  fields: ['username', 'emails.address'],
   engine: new EasySearch.Minimongo(),
 });
+

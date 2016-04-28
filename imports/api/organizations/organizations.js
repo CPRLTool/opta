@@ -3,7 +3,8 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import { Meteor } from 'meteor/meteor';
 
-import { defaultFields } from '../users/users.js';
+import { userDefaultFields } from '../users/users.js';
+import { EasySearch } from 'meteor/easy:search';
 
 // class ListsCollection extends Mongo.Collection {
 //   insert(list, callback) {
@@ -78,14 +79,10 @@ Organizations.schema = new SimpleSchema({
 
 Organizations.attachSchema(Organizations.schema);
 
-// // This represents the keys from Lists objects that should be published
-// // to the client. If we add secret properties to List objects, don't list
-// // them here to keep them private to the server.
-// Lists.publicFields = {
-//   name: 1,
-//   incompleteCount: 1,
-//   userId: 1,
-// };
+export const defaultFields = {
+  // _id: 1,
+  name: 1,
+};
 
 Factory.define('organization', Organizations, {});
 
@@ -100,6 +97,12 @@ Organizations.helpers({
     // return Meteor.users.find({ organizations: { $elemMatch: { $eq: this._id } } });
     return Meteor.users.find(
       { _id: { $in: this.members.map(m => m.id) } },
-      { fields: defaultFields });
+      { fields: userDefaultFields });
   },
+});
+
+export const SearchOrgsIndex = new EasySearch.Index({
+  collection: Organizations,
+  fields: ['name'],
+  engine: new EasySearch.Minimongo(),
 });

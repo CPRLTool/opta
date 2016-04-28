@@ -1,8 +1,6 @@
 import React from 'react';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
-import { FlowRouter } from 'meteor/kadira:flow-router';
-
 const NavBar = ({ loggingIn, currUser }) => (
   <Navbar inverse>
     <Navbar.Header>
@@ -28,7 +26,7 @@ const AuthNav = ({ username }) => (
     </Nav>
     <Nav pullRight>
       <NavDropdown eventKey={3} title={username} id="account-dropdown">
-        <MenuItem eventKey={3.1} href={FlowRouter.path('user.profile', { username })}>My Profile</MenuItem>
+        <MenuItem eventKey={3.1} href={`/user/${username}`}>My Profile</MenuItem>
         <MenuItem divider />
         <MenuItem eventKey={3.2} href="/logout">Log Out</MenuItem>
       </NavDropdown>

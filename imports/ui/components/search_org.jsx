@@ -4,7 +4,7 @@ import EntityThumbnail from './entity_thumbnail.jsx';
 
 import { debounce } from 'lodash';
 
-export default class SearchUser extends Component {
+export default class SearchOrg extends Component {
 
   constructor(props) {
     super(props);
@@ -13,8 +13,9 @@ export default class SearchUser extends Component {
       searchResults: null,
     };
     this.handleChange = this.handleChange.bind(this);
-    this.selectUser = this.selectUser.bind(this);
-    this.renderUserThumbnail = this.renderUserThumbnail.bind(this);
+    this.selectOrg = this.selectOrg.bind(this);
+    this.renderOrgThumbnail = this.renderOrgThumbnail.bind(this);
+    // this.getSearchString = this.getSearchString.bind(this);
     this.delayedSearch = debounce(
       () => {
         this.setState({ searchResults: this.props.search(this.state.searchString) });
@@ -22,6 +23,11 @@ export default class SearchUser extends Component {
       500
     );
   }
+
+  // // to be called from parent
+  // getSearchString() {
+  //   return this.state.searchString;
+  // }
 
   handleChange(event) {
     if (event && event.preventDefault) {
@@ -40,45 +46,48 @@ export default class SearchUser extends Component {
     this.delayedSearch();
   }
 
-  // use fxn closure to get user obj
-  selectUser(user) {
+  // use fxn closure to get org obj
+  selectOrg(org) {
     return (event) => {
       if (event && event.preventDefault) {
         event.preventDefault();
       }
-      // send selected user to parent component via callback
-      this.props.onSelectUser(user);
+      // send selected org to parent component via callback
+      this.props.onSelectOrg(org);
     };
   }
 
-  renderUserThumbnail(user) {
+  renderOrgThumbnail(org) {
     return (
       <EntityThumbnail
-        key={user.username}
-        imgLink="/images/avatar_placeholder_thumbnail.png"
-        name={user.username}
-        onClick={this.selectUser(user)}
-        disabled={!user.selectable}
+        key={org.name}
+        imgLink="/images/org_logo_placeholder_thumbnail.png"
+        name={org.name}
+        onClick={this.selectOrg(org)}
+        // onClick={`/organization/${org.name}`}
+        // disabled={!org.selectable}
       />
     );
   }
 
   render() {
+    // const errorProps = this.props.errorProp || {};
+    const errorProps = this.props.hasError ? { validationState: 'error' } : {};
     return (
       <div>
-        <FormGroup controlId="searchBox">
-          <ControlLabel>Search by username or email</ControlLabel>
+        <FormGroup controlId="searchBox" {...errorProps} >
+          <ControlLabel>Enter a unique name.</ControlLabel>
           <FormControl
             type="text"
             value={this.state.searchString}
             placeholder="e.g. jonsnow"
             onChange={this.handleChange}
           />
-          <HelpBlock>Click a user below to select.</HelpBlock>
+          <HelpBlock>Check below to ensure the organization you wish to create doesn't already exist!</HelpBlock>
         </FormGroup>
         <Row>
           { this.state.searchString && this.state.searchResults
-            ? this.state.searchResults.map(this.renderUserThumbnail)
+            ? this.state.searchResults.map(this.renderOrgThumbnail)
             : ''
           }
         </Row>
@@ -87,8 +96,8 @@ export default class SearchUser extends Component {
   }
 }
 
-SearchUser.propTypes = {
+SearchOrg.propTypes = {
   search: PropTypes.func.isRequired,
-  onSelectUser: PropTypes.func.isRequired,
+  onSelectOrg: PropTypes.func.isRequired,
   setSearchString: PropTypes.func,
 };

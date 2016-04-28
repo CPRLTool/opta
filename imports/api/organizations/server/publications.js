@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { Organizations } from '../organizations.js';
+import { Organizations, defaultFields } from '../organizations.js';
 
 Meteor.publishComposite('organizations.profile', (name) => {
   new SimpleSchema({
@@ -20,3 +20,7 @@ Meteor.publishComposite('organizations.profile', (name) => {
     }],
   };
 });
+
+Meteor.publish('organizations.defaultInfo', () =>
+  Organizations.find({}, { fields: defaultFields })
+);

@@ -9,7 +9,7 @@ import AppLayout from '../../ui/layouts/app.jsx';
 import Home from '../../ui/containers/home';
 import NotFound from '../../ui/components/not_found.jsx';
 import UserProfile from '../../ui/containers/user_profile';
-import CreateOrg from '../../ui/components/create_org.jsx';
+import CreateOrg from '../../ui/containers/create_org';
 import OrgProfile from '../../ui/containers/org_profile';
 
 // UserAccounts Routes
