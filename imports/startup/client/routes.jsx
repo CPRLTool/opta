@@ -1,4 +1,4 @@
-import { Meteor } from 'meteor/meteor';
+// import { Meteor } from 'meteor/meteor';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
 
@@ -11,6 +11,10 @@ import NotFound from '../../ui/components/not_found.jsx';
 import UserProfile from '../../ui/containers/user_profile';
 import CreateOrg from '../../ui/containers/create_org';
 import OrgProfile from '../../ui/containers/org_profile';
+import CreatePort from '../../ui/containers/create_port';
+import PortDash from '../../ui/containers/port_dash';
+import CreateInit from '../../ui/containers/create_init';
+
 
 // UserAccounts Routes
 FlowRouter.triggers.enter([AccountsTemplates.ensureSignedIn]);
@@ -74,17 +78,12 @@ FlowRouter.notFound = {
   },
 };
 
-FlowRouter.route('/user/:username', {
-  name: 'user.profile',
-  triggersEnter: [(context, redirect) => {
-    const handle = Meteor.subscribe('Meteor.users.defaultInfo');
+const userRoutes = FlowRouter.group({
+  prefix: '/user',
+});
 
-    if (handle.ready()) {
-      if (Meteor.users.find({ username: context.params.username }, { _id: 1 }).fetch().length === 0) {
-        redirect('/');
-      }
-    }
-  }],
+userRoutes.route('/:username', {
+  name: 'user.profile',
   action(params) {
     mount(AppLayout, {
       main: <UserProfile username={params.username} />,
@@ -92,7 +91,11 @@ FlowRouter.route('/user/:username', {
   },
 });
 
-FlowRouter.route('/organization/create', {
+const orgRoutes = FlowRouter.group({
+  prefix: '/organization',
+});
+
+orgRoutes.route('/create', {
   name: 'organization.create',
   action() {
     mount(AppLayout, {
@@ -101,7 +104,7 @@ FlowRouter.route('/organization/create', {
   },
 });
 
-FlowRouter.route('/organization/:name', {
+orgRoutes.route('/:name', {
   name: 'organization.profile',
   action(params) {
     mount(AppLayout, {
@@ -110,3 +113,46 @@ FlowRouter.route('/organization/:name', {
   },
 });
 
+const portfolioRoutes = FlowRouter.group({
+  prefix: '/portfolio',
+});
+
+portfolioRoutes.route('/create', {
+  name: 'portfolio.create',
+  action() {
+    mount(AppLayout, {
+      main: <CreatePort />,
+    });
+  },
+});
+
+portfolioRoutes.route('/:id', {
+  name: 'portfolio.dashboard',
+  action(params) {
+    mount(AppLayout, {
+      main: <PortDash id={params.id} />,
+    });
+  },
+});
+
+const initiativeRoutes = FlowRouter.group({
+  prefix: '/initiative',
+});
+
+initiativeRoutes.route('/create', {
+  name: 'initiative.create',
+  action() {
+    mount(AppLayout, {
+      main: <CreateInit />,
+    });
+  },
+});
+
+initiativeRoutes.route('/:id', {
+  name: 'initiative.dashboard',
+  action(params) {
+    mount(AppLayout, {
+      // main: <OrgProfile name={params.name} />,
+    });
+  },
+});

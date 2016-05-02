@@ -37,31 +37,35 @@ export default class CreateOrg extends Component {
     this.setState({ name: searchString });
   }
 
+  renderSubmitButton() {
+    return (
+      <Button
+        type="submit"
+        className="center-block"
+        onClick={this.handleSubmit}
+        bsStyle="success">
+          Create
+      </Button>
+    );
+  }
+
   render() {
     return (
       <div className="container">
-        <Form horizontal>
-          <FormGroup>
-            <div className="text-center">
-              <h3>Create an Organization</h3>
-            </div>
-          </FormGroup>
-          <SearchOrg
-            setSearchString={this.setName}
-            onSelectOrg={this.props.selectOrgFromSearchToCreate}
-            hasError={this.state.hasError}
-            // errorProp={this.state.errorProp}
-          />
-          <FormGroup>
-            <Button
-              type="submit"
-              className="center-block"
-              onClick={this.handleSubmit}
-              bsStyle="success">
-                Create
-            </Button>
-          </FormGroup>
-        </Form>
+        <div className="text-center">
+          <span>
+            <h3>Create an Organization</h3>
+            <br />
+            <p>Choose a unique name for your organization. Existing organizations will appear below as you type.</p>
+            <br />
+          </span>
+        </div>
+        <SearchOrg
+          setSearchString={this.setName}
+          onSelectOrg={this.props.selectOrgFromSearchToCreate}
+          hasError={this.state.hasError}
+          renderSubmit={this.renderSubmitButton.bind(this)}
+        />
       </div>
     );
   }

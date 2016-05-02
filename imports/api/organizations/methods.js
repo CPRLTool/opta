@@ -30,7 +30,7 @@ export const create = new ValidatedMethod({
       ],
     };
 
-    Organizations.insert(org);
+    return Organizations.insert(org);
   },
 });
 

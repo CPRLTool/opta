@@ -13,7 +13,9 @@ function composer(props, onData) {
 
   if (handle.ready()) {
     const org = Organizations.findOne({ name: props.name });
-    onData(null, { org, currUser, updateProfile, inviteMember });
+    const isAdmin = (cU, o) => o && cU && o.editableBy(cU);
+    const members = (o) => o.getMembers().fetch();
+    onData(null, { currUser, org, isAdmin, members, updateProfile, inviteMember });
   }
 }
 

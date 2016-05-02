@@ -2,7 +2,9 @@ import { Meteor } from 'meteor/meteor';
 // import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { Organizations } from '../organizations/organizations.js';
+import { Organizations } from '../organizations/organizations'; // , listItemFields as orgListFields
+import { Initiatives, listItemFields as initListFields } from '../initiatives/initiatives';
+import { Portfolios } from '../portfolios/portfolios';
 import { EasySearch } from 'meteor/easy:search';
 
 // Deny all client-side updates to user documents
@@ -10,7 +12,7 @@ Meteor.users.deny({
   update() { return true; },
 });
 
-const userSchema = new SimpleSchema({
+export const UserSchema = new SimpleSchema({
   _id: {
     type: String,
     regEx: SimpleSchema.RegEx.Id,
@@ -96,17 +98,13 @@ const userSchema = new SimpleSchema({
     type: String,
     optional: true,
   },
-  // organizations: {
-  //   type: [String],
-  //   optional: true,
-  // },
-  // 'organizations.$': {
-  //   type: String,
-  //   regEx: SimpleSchema.RegEx.Id,
-  // },
+  updatedProfile: {
+    type: String,
+    optional: true,
+  },
 });
 
-Meteor.users.attachSchema(userSchema);
+Meteor.users.attachSchema(UserSchema);
 
 export const profileFields = {
   firstName: 1,
@@ -121,8 +119,27 @@ export const defaultFields = {
 };
 
 Meteor.users.helpers({
+  isNewUser() {
+    const updatedProfile = !!this.firstName || !!this.lastName || !!this.bio;
+    return !updatedProfile;
+  },
   organizations() {
-    return Organizations.find({ members: { $elemMatch: { id: this._id } } });
+    return Organizations.find(
+      { members: { $elemMatch: { id: this._id } } }// ,
+      // { fields: orgListFields }
+    );
+  },
+  initiatives() {
+    return Initiatives.find(
+      { members: { $elemMatch: { id: this._id } } },
+      { fields: initListFields }
+    );
+  },
+  availableMetrics() {
+    // gets metrics that this user can select from initiative setup
+  },
+  personalPortfolios() {
+    return Portfolios.find({ 'owner.type': 'user', 'owner.id': this._id });
   },
 });
 

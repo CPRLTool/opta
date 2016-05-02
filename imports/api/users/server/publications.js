@@ -6,22 +6,6 @@ import { profileFields, defaultFields } from '../users.js';
 
 import { Organizations } from '../../organizations/organizations.js';
 
-// Meteor.publish('Meteor.users.profileInfo', (searchString) => {
-//   // Validate the arguments to be what we expect
-//   new SimpleSchema({
-//     username: { type: String },
-//   }).validate({ username });
-
-//   const selector = {
-//     username,
-//   };
-
-//   const options = {
-//     fields: profileFields,
-//   };
-
-//   return Meteor.users.find(selector, options);
-// });
 
 Meteor.publishComposite('Meteor.users.profileInfo', (username) => {
   // Validate the arguments to be what we expect
@@ -31,10 +15,7 @@ Meteor.publishComposite('Meteor.users.profileInfo', (username) => {
 
   return {
     find() {
-      const selector = { username };
-      const options = { fields: profileFields };
-
-      return Meteor.users.find(selector, options);
+      return Meteor.users.find({ username }, { fields: profileFields });
     },
 
     children: [{
@@ -47,6 +28,14 @@ Meteor.publishComposite('Meteor.users.profileInfo', (username) => {
 
 Meteor.publish('Meteor.users.defaultInfo', () =>
   Meteor.users.find({}, { fields: defaultFields })
+);
+
+Meteor.publish('Meteor.users.basic', (_id) =>
+  Meteor.users.find({ _id }, { fields: defaultFields })
+);
+
+Meteor.publish('Meteor.users.home', (_id) =>
+  Meteor.users.find({ _id }, { fields: { updatedProfile: 1 } })
 );
 
 Meteor.publishTransformed('Meteor.users.searchToInviteToOrg', (org) => {

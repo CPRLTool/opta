@@ -8,24 +8,16 @@ export default class OrgProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // name: props.org ? props.org.name : '',
       about: props.org ? (props.org.about || '') : '',
       editing: false,
       isSubmitting: false,
       showModal: false,
-      searchUser: '',
     };
     this.handleFieldEdit = this.handleFieldEdit.bind(this);
     this.toggleSave = this.toggleSave.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.toggleSearchUser = this.toggleSearchUser.bind(this);
     this.handleInvite = this.handleInvite.bind(this);
-  }
-
-  isAdmin() {
-    return this.props.org
-      && this.props.currUser
-      && this.props.org.editableBy(this.props.currUser._id);
   }
 
   handleFieldEdit(event) {
@@ -115,7 +107,8 @@ export default class OrgProfile extends Component {
 
   render() {
     const opts = {};
-    if (!this.isAdmin() || (this.isAdmin() && !this.state.editing)) {
+    const isAd = this.props.isAdmin(this.props.currUser, this.props.org);
+    if (!isAd || (isAd && !this.state.editing)) {
       opts.readOnly = 'readOnly';
     }
 
@@ -146,7 +139,7 @@ export default class OrgProfile extends Component {
             </Col>
           </FormGroup>
           <FormGroup controlId="editAndSave">
-            { this.isAdmin() ? this.renderEditButton() : '' }
+            { this.isAd ? this.renderEditButton() : '' }
           </FormGroup>
         </Form>
         <hr />
@@ -154,8 +147,11 @@ export default class OrgProfile extends Component {
           <h4>Members</h4>
         </div>
         <Row>
-          { this.props.org.users().map(this.renderUserThumbnails) }
-          { this.isAdmin() ? this.renderInviteButton() : '' }
+          { this.props.org
+            ? this.props.members(this.props.org).map(this.renderUserThumbnails)
+            : ''
+          }
+          { isAd ? this.renderInviteButton() : '' }
         </Row>
         <Modal show={this.state.showModal} onHide={this.toggleSearchUser}>
           <Modal.Header closeButton>
@@ -174,8 +170,10 @@ export default class OrgProfile extends Component {
 }
 
 OrgProfile.propTypes = {
-  org: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  org: PropTypes.object.isRequired,
+  isAdmin: PropTypes.func.isRequired,
+  members: PropTypes.func.isRequired,
   updateProfile: PropTypes.func,
   inviteMember: PropTypes.func,
 };

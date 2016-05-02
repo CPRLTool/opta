@@ -14,3 +14,16 @@ footer {
   height: 70px;
 }
 */
+
+.btn {
+  white-space: normal;
+}
+
+textarea {
+  height: 120px;
+  resize: none;
+}
+
+.list-inline {
+  white-space: nowrap;
+}

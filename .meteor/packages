@@ -28,7 +28,6 @@ dburles:collection-helpers
 twbs:bootstrap
 kadira:flow-router
 accounts-password
-accounts-google
 templating
 blaze
 gadicc:blaze-react-component
@@ -39,3 +38,5 @@ easy:search
 dburles:factory
 maximum:server-transform
 reactive-dict
+random
+osv:mongo-counter

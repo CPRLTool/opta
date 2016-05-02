@@ -1,32 +1,14 @@
+/* eslint-disable consistent-return */
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Factory } from 'meteor/dburles:factory';
+// import { Factory } from 'meteor/dburles:factory';
 import { Meteor } from 'meteor/meteor';
 
+import { Portfolios } from '../portfolios/portfolios';
+import { MemberSchema } from '../common_sub_schemas';
 import { userDefaultFields } from '../users/users.js';
 import { EasySearch } from 'meteor/easy:search';
 
-// class ListsCollection extends Mongo.Collection {
-//   insert(list, callback) {
-//     const ourList = list;
-//     if (!ourList.name) {
-//       let nextLetter = 'A';
-//       ourList.name = `List ${nextLetter}`;
-
-//       while (!!this.findOne({ name: ourList.name })) {
-//         // not going to be too smart here, can go past Z
-//         nextLetter = String.fromCharCode(nextLetter.charCodeAt(0) + 1);
-//         ourList.name = `List ${nextLetter}`;
-//       }
-//     }
-
-//     return super.insert(ourList, callback);
-//   }
-//   remove(selector, callback) {
-//     Todos.remove({ listId: selector });
-//     return super.remove(selector, callback);
-//   }
-// }
 
 // export const Lists = new ListsCollection('Lists');
 export const Organizations = new Mongo.Collection('Organizations');
@@ -58,22 +40,29 @@ Organizations.schema = new SimpleSchema({
     optional: true,
   },
   // members: {
-  //   type: Array,
+  //   type: [Object],
   //   defaultValue: [],
   // },
-  // 'members.$': {
-  //   type: Object,
+  // 'members.$.id': {
+  //   type: String,
+  //   regEx: SimpleSchema.RegEx.Id,
+  // },
+  // 'members.$.isAdmin': {
+  //   type: Boolean,
   // },
   members: {
-    type: [Object],
-    defaultValue: [],
+    type: [MemberSchema],
   },
-  'members.$.id': {
-    type: String,
-    regEx: SimpleSchema.RegEx.Id,
-  },
-  'members.$.isAdmin': {
-    type: Boolean,
+  createdAt: {
+    type: Date,
+    autoValue() {
+      if (this.isInsert) {
+        return new Date();
+      } else if (this.isUpsert) {
+        return { $setOnInsert: new Date() };
+      }
+      this.unset();  // Prevent user from supplying their own value
+    },
   },
 });
 
@@ -84,20 +73,33 @@ export const defaultFields = {
   name: 1,
 };
 
-Factory.define('organization', Organizations, {});
+export const listItemFields = {
+  // _id: 1,
+  name: 1,
+  about: 1,
+};
+
+// Factory.define('organization', Organizations, {});
 
 Organizations.helpers({
+  // editableBy(userId) {
+  //   const user = Meteor.users.findOne({ _id: userId });
+  //   return !!user && this.members.some(m => m.id === userId && m.isAdmin);
+  // },
   editableBy(userId) {
-    // return !!this.userIds.find(u => u === userId && u.isAdmin);
-    const user = Meteor.users.findOne({ _id: userId });
-    // return !!user && user.organizations && !!user.organizations.find(org => org.id === this._id && org.isAdmin);
-    return !!user && this.members.some(m => m.id === userId && m.isAdmin);
+    return this.members.some(m => m.id === userId && m.isAdmin);
   },
-  users() {
+  getMembers() {
     // return Meteor.users.find({ organizations: { $elemMatch: { $eq: this._id } } });
     return Meteor.users.find(
       { _id: { $in: this.members.map(m => m.id) } },
       { fields: userDefaultFields });
+  },
+  hasMember(userId) {
+    return this.members.some(m => m.id === userId);
+  },
+  portfolios() {
+    return Portfolios.find({ 'owner.type': 'organization', 'owner.id': this._id });
   },
 });
 

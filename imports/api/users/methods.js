@@ -17,7 +17,7 @@ export const updateProfile = new ValidatedMethod({
     }
 
     Meteor.users.update(this.userId, {
-      $set: { firstName, lastName, bio },
+      $set: { firstName, lastName, bio, updatedProfile: true },
     });
   },
 });

@@ -154,7 +154,7 @@ export default class UserProfile extends Component {
           <h4>Organizations</h4>
         </div>
         <Row>
-          { this.props.user.organizations().map(this.renderOrgThumbnails) }
+          { this.props.user ? this.props.orgsOf(this.props.user).map(this.renderOrgThumbnails) : '' }
         </Row>
       </div>
     );
@@ -162,7 +162,9 @@ export default class UserProfile extends Component {
 }
 
 UserProfile.propTypes = {
+  // user: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  orgsOf: PropTypes.func.isRequired,
   updateProfile: PropTypes.func.isRequired,
 };
