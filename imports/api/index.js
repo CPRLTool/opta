@@ -6,3 +6,5 @@ import './portfolios/methods';
 import './portfolios/server/publications';
 import './initiatives/methods';
 import './initiatives/server/publications';
+import './metrics/methods';
+import './metrics/server/publications';

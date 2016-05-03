@@ -80,7 +80,6 @@ npm-bcrypt@0.8.5
 npm-mongo@1.4.43
 observe-sequence@1.0.11
 ordered-dict@1.0.7
-osv:mongo-counter@0.2.1
 peerlibrary:assert@0.2.5
 peerlibrary:base-component@0.14.0
 peerlibrary:blaze-components@0.16.2

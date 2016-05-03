@@ -12,7 +12,7 @@ function canEdit(uId, port) {
 }
 
 function getInitiatives(port) {
-  return port ? port.getInitiatives() : false;
+  return port ? port.getInitiatives().fetch() : false;
 }
 
 function composer(props, onData) {

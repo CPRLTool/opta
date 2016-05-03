@@ -73,11 +73,14 @@ export default class PortDash extends Component {
     if (!canEdit || (canEdit && !this.state.editing)) {
       opts.readOnly = 'readOnly';
     }
-
+    const port = this.props.portfolio;
+    const createLink = port
+      ? `/initiative/create?p=${port._id}`
+      : '/initiative/create';
     return (
       <div className="container">
         <div className="text-center">
-            <h2>{this.props.portfolio ? this.props.portfolio.name : ''}</h2>
+            <h2>{port ? port.name : ''}</h2>
         </div>
         <br />
         <Form horizontal>
@@ -99,18 +102,23 @@ export default class PortDash extends Component {
         <br />
         <hr />
         <Row>
-          <Col sm={4} smOffset={4}>
-            <h4>Initiatives</h4>
+          <Col xs={4} xsOffset={4}>
+            <div className="text-center">
+              <h4>Initiatives</h4>
+            </div>
+          </Col>
+          <Col xs={4}>
             <Button
-              href="/initiatives/create"
+              // className="center-block"
+              href={createLink}
             >
               Create
             </Button>
           </Col>
         </Row>
         <br />
-        { this.props.portfolio
-          ? <InitiativeList initiatives={this.props.getInitiatives(this.props.portfolio)} />
+        { port
+          ? <InitiativeList initiatives={this.props.getInitiatives(port)} />
           : ''
         }
       </div>

@@ -7,7 +7,6 @@ import { Meteor } from 'meteor/meteor';
 
 import { MemberSchema, OwnerSchema, EntityWithMetricsSchema } from '../common_sub_schemas';
 import { userDefaultFields } from '../users/users.js';
-// import { incrementCounter } from 'meteor/osv:mongo-counter';
 import { EasySearch } from 'meteor/easy:search';
 
 
@@ -53,9 +52,14 @@ const FundSchema = new SimpleSchema({
 const InputsSchema = new SimpleSchema({
   funding: {
     type: [FundSchema],
+    defaultValue: [],
   },
   other: {
     type: Object,
+    defaultValue: {
+      internal: '',
+      external: '',
+    },
   },
   'other.internal': {
     type: String,
@@ -78,23 +82,14 @@ Initiatives.schema = new SimpleSchema({
   dataOwner: {
     type: OwnerSchema,
   },
-  // members: {
-  //   type: [Object],
-  //   defaultValue: [],
-  // },
-  // 'members.$.id': {
-  //   type: String,
-  //   regEx: SimpleSchema.RegEx.Id,
-  // },
-  // 'members.$.isAdmin': {
-  //   type: Boolean,
-  // },
   members: {
     type: [MemberSchema],
   },
   viewers: {
     type: [String],
     regEx: SimpleSchema.RegEx.Id,
+    defaultValue: [],
+
   },
   createdAt: {
     type: Date,
@@ -107,15 +102,39 @@ Initiatives.schema = new SimpleSchema({
       this.unset();  // Prevent user from supplying their own value
     },
   },
-  closed: {
-    type: Boolean,
-    autoValue() {
-      if (this.isInsert) {
-        return false;
-      } else if (this.isUpsert) {
-        return { $setOnInsert: false };
-      }
+  // isActive: {
+  //   type: Boolean,
+  //   defaultValue: true,
+  // },
+  // hasStarted: {
+  //   type: Boolean,
+  //   defaultValue: false,
+  // },
+  overview: {
+    type: String,
+    defaultValue: '',
+  },
+  theoryOfAction: {
+    type: String,
+    defaultValue: '',
+  },
+  strategy: {
+    type: String,
+    defaultValue: '',
+  },
+  inputs: {
+    type: InputsSchema,
+    defaultValue: {
+      funding: [],
+      other: {
+        internal: '',
+        external: '',
+      },
     },
+  },
+  outcomes: {
+    type: [OutcomeSchema],
+    minCount: 1, // or 3?
   },
   // startDate: {
   //   type: Date,
@@ -155,25 +174,6 @@ Initiatives.schema = new SimpleSchema({
   //   //   }
   //   // },
   // },
-  overview: {
-    type: String,
-    defaultValue: '',
-  },
-  theoryOfAction: {
-    type: String,
-    defaultValue: '',
-  },
-  strategy: {
-    type: String,
-    defaultValue: '',
-  },
-  inputs: {
-    type: InputsSchema,
-  },
-  outcomes: {
-    type: [OutcomeSchema],
-    minCount: 1, // or 3?
-  },
   //   autoValue() {
   //     if (this.isInsert) {
   //       if (!this.isSet) {
@@ -256,6 +256,12 @@ export const portfolioDashboardFields = {
   name: 1,
 };
 
+export const listOfTextFields = [
+  'overview',
+  'theoryOfAction',
+  'strategy',
+];
+
 // Factory.define('organization', Initiatives, {});
 
 Initiatives.helpers({
@@ -272,8 +278,8 @@ Initiatives.helpers({
   hasMember(userId) {
     return this.members.some(m => m.id === userId);
   },
-  metrics() {
-    // return all metrics for this initiative filtered for data points in the start-end date range
+  getMetrics() {
+    return;
   },
 });
 

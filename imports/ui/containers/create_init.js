@@ -3,10 +3,12 @@ import { composeWithTracker } from 'react-komposer';
 
 import CreateInit from '../components/create_init.jsx';
 import { create } from '../actions/initiatives';
+import { Organizations } from '../../api/organizations/organizations';
+import { Portfolios } from '../../api/portfolios/portfolios';
 
 
 const getOwnerOptions = (currUser) => {
-  const orgs = currUser.organizations().fetch();
+  const orgs = Organizations.find({}).fetch();
   const ownerOptions = [{
     name: `You (${currUser.username})`,
     value: {
@@ -26,12 +28,25 @@ const getOwnerOptions = (currUser) => {
   return ownerOptions;
 };
 
+const filterPortfoliosFor = (portfolios, ownerId) => {
+  const filtered = portfolios.filter(p =>
+    p.owner.id === ownerId
+  );
+
+  const ret = [];
+  filtered.forEach(p => ret.push({ name: p.name, id: p._id }));
+  return ret;
+};
+
 function composer(props, onData) {
   const currUserId = Meteor.userId();
   const handle = Meteor.subscribe('organizations.dataOwnerSelection', currUserId);
-  if (handle.ready()) {
+  const handle2 = Meteor.subscribe('portfolios.listForUser', currUserId);
+  if (handle.ready() && handle2.ready()) {
     const currUser = Meteor.users.findOne({ _id: Meteor.userId() });
-    onData(null, { create, currUser, getOwnerOptions });
+    const portfolios = Portfolios.find({}).fetch();
+    const forPortfolio = props.forPortfolio;
+    onData(null, { create, currUser, forPortfolio, portfolios, getOwnerOptions, filterPortfoliosFor });
   }
 }
 

@@ -22,7 +22,7 @@ const AuthNav = ({ username }) => (
       <NavDropdown eventKey={2} title="Create..." id="create-dropdown">
         <MenuItem eventKey={2.1} href="/organization/create">New Organization</MenuItem>
         <MenuItem eventKey={2.2} href="/portfolio/create">New Portfolio</MenuItem>
-        <MenuItem eventKey={2.2} href="#">New Initiative</MenuItem>
+        <MenuItem eventKey={2.2} href="/initiative/create">New Initiative</MenuItem>
       </NavDropdown>
     </Nav>
     <Nav pullRight>

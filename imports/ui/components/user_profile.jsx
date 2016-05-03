@@ -149,10 +149,13 @@ export default class UserProfile extends Component {
             { this.isCurrUser() ? this.renderEditButton() : ''}
           </FormGroup>
         </Form>
+        <br />
         <hr />
+        <br />
         <div className="text-center">
           <h4>Organizations</h4>
         </div>
+        <br />
         <Row>
           { this.props.user ? this.props.orgsOf(this.props.user).map(this.renderOrgThumbnails) : '' }
         </Row>

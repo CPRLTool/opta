@@ -14,6 +14,7 @@ import OrgProfile from '../../ui/containers/org_profile';
 import CreatePort from '../../ui/containers/create_port';
 import PortDash from '../../ui/containers/port_dash';
 import CreateInit from '../../ui/containers/create_init';
+import InitHome from '../../ui/containers/initiative_home';
 
 
 // UserAccounts Routes
@@ -141,18 +142,20 @@ const initiativeRoutes = FlowRouter.group({
 
 initiativeRoutes.route('/create', {
   name: 'initiative.create',
-  action() {
+  action(params, queryParams) {
+    const portId = 'p' in queryParams ? queryParams.p : null;
     mount(AppLayout, {
-      main: <CreateInit />,
+      main: <CreateInit forPortfolio={portId} />,
     });
   },
 });
 
-initiativeRoutes.route('/:id', {
-  name: 'initiative.dashboard',
+initiativeRoutes.route('/:id/:tab', {
+  name: 'initiative.home',
   action(params) {
     mount(AppLayout, {
-      // main: <OrgProfile name={params.name} />,
+      main: <InitHome id={params.id} tab={params.tab} />,
     });
   },
 });
+

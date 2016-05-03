@@ -24,17 +24,17 @@ export const create = new ValidatedMethod({
         throw new Meteor.Error('portfolios.insert.notAuthorized',
           'Cannot create a portfolio for another user');
       }
-    }
-
-    // check if you are member of org this is supposed to be owned by
-    // const creator = Meteor.users.findOne({ _id: this.userId });
-    // const memberOfOrg = !(owner.id in creator.organizations().map(o => o._id));
-    const matches = Organizations.find(
-      { _id: owner.id, members: { $elemMatch: { id: this.userId } } }
-    );
-    if (matches.count() === 0) {
-      throw new Meteor.Error('portfolios.insert.notAuthorized',
-        'Cannot create a portfolio for an organization you don\'t belong to');
+    } else {
+      // check if you are member of org this is supposed to be owned by
+      // const creator = Meteor.users.findOne({ _id: this.userId });
+      // const memberOfOrg = !(owner.id in creator.organizations().map(o => o._id));
+      const matches = Organizations.find(
+        { _id: owner.id, members: { $elemMatch: { id: this.userId } } }
+      );
+      if (matches.count() === 0) {
+        throw new Meteor.Error('portfolios.insert.notAuthorized',
+          'Cannot create a portfolio for an organization you don\'t belong to');
+      }
     }
 
     return Portfolios.insert({
@@ -126,32 +126,32 @@ export const addInitiative = new ValidatedMethod({
       throw new Meteor.Error('not-authorized');
     }
 
-    const p = Portfolios.findOne({ _id });
-    if (!p) {
-      throw new Meteor.Error('portfolios.addInitiative.orgDoesNotExist',
-        'Portfolio with provided id does not exist.');
-    }
+    // const p = Portfolios.findOne({ _id });
+    // if (!p) {
+    //   throw new Meteor.Error('portfolios.addInitiative.orgDoesNotExist',
+    //     'Portfolio with provided id does not exist.');
+    // }
 
-    if (!p.editableBy(this.userId)) {
-      throw new Meteor.Error('portfolios.addInitiative.notAuthorized',
-        'You do not have admin priveleges for this portfolio.');
-    }
+    // if (!p.editableBy(this.userId)) {
+    //   throw new Meteor.Error('portfolios.addInitiative.notAuthorized',
+    //     'You do not have admin priveleges for this portfolio.');
+    // }
 
-    const i = Initiatives.findOne({ _id: initiativeId });
-    if (!i) {
-      throw new Meteor.Error('portfolios.addInitiative.userDoesNotExist',
-        'Given user does not exist.');
-    }
+    // const i = Initiatives.findOne({ _id: initiativeId });
+    // if (!i) {
+    //   throw new Meteor.Error('portfolios.addInitiative.userDoesNotExist',
+    //     'Given user does not exist.');
+    // }
 
-    if (!i.hasMember(this.userId)) {
-      throw new Meteor.Error('portfolios.addInitiative.notAuthorized',
-        'You are not a member of the given initiative.');
-    }
+    // if (!i.hasMember(this.userId)) {
+    //   throw new Meteor.Error('portfolios.addInitiative.notAuthorized',
+    //     'You are not a member of the given initiative.');
+    // }
 
-    if (p.hasInitiative(initiativeId)) {
-      throw new Meteor.Error('portfolios.addInitiative.alreadyMember',
-        'Given initiative is already in this portfolio.');
-    }
+    // if (p.hasInitiative(initiativeId)) {
+    //   throw new Meteor.Error('portfolios.addInitiative.alreadyMember',
+    //     'Given initiative is already in this portfolio.');
+    // }
 
     Portfolios.update(
       { _id },

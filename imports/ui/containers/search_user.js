@@ -6,7 +6,7 @@ import SearchUser from '../components/search_user.jsx';
 import { search } from '../actions/users';
 
 function composer(props, onData) {
-  const handle = Meteor.subscribe('Meteor.users.searchToInviteToOrg', props.org);
+  const handle = Meteor.subscribe('Meteor.users.searchToInviteToGroup', props.group);
 
   if (handle.ready()) {
     const data = {

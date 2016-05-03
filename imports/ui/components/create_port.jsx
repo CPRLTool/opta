@@ -9,7 +9,7 @@ export default class CreatePort extends Component {
     super(props);
     this.state = {
       name: '',
-      owner: 'blank',
+      owner: null,
     };
     this.handleFieldEdit = this.handleFieldEdit.bind(this);
     // this.handleSelect = this.handleSelect.bind(this);
@@ -21,7 +21,11 @@ export default class CreatePort extends Component {
       event.preventDefault();
     }
     const id = event.target.id;
-    this.setState({ [id]: event.target.value });
+    let value = event.target.value;
+    if (id === 'owner') {
+      value = JSON.parse(value);
+    }
+    this.setState({ [id]: value });
   }
 
   // handleSelect(event) {
@@ -32,8 +36,7 @@ export default class CreatePort extends Component {
     if (event && event.preventDefault) {
       event.preventDefault();
     }
-    console.log(this.state.owner);
-    this.props.create({ owner: JSON.parse(this.state.owner), name: this.state.name });
+    this.props.create({ owner: this.state.owner, name: this.state.name });
   }
 
   render() {
@@ -68,7 +71,7 @@ export default class CreatePort extends Component {
             <Col sm={6}>
               <FormControl
                 componentClass="select"
-                value={this.state.ownerId}
+                value={this.state.owner}
                 onChange={this.handleFieldEdit}
                 // onChange={this.handleSelect}
               >

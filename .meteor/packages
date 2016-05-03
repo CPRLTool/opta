@@ -39,4 +39,3 @@ dburles:factory
 maximum:server-transform
 reactive-dict
 random
-osv:mongo-counter

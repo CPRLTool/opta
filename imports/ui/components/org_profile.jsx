@@ -142,7 +142,9 @@ export default class OrgProfile extends Component {
             { this.isAd ? this.renderEditButton() : '' }
           </FormGroup>
         </Form>
+        <br />
         <hr />
+        <br />
         <div className="text-center">
           <h4>Members</h4>
         </div>
@@ -158,7 +160,7 @@ export default class OrgProfile extends Component {
             <Modal.Title>Search for User</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <SearchUser org={this.props.org} onSelectUser={this.handleInvite} />
+            <SearchUser group={this.props.org} onSelectUser={this.handleInvite} />
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.toggleSearchUser}>Close</Button>

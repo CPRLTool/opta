@@ -1,4 +1,3 @@
-import { Meteor } from 'meteor/meteor';
 import React, { Component, PropTypes } from 'react';
 import { Form, Col, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
 
@@ -7,9 +6,16 @@ export default class CreateInit extends Component {
 
   constructor(props) {
     super(props);
+    let owner = {};
+    if (props.forPortfolio && props.portfolios) {
+      const p = props.portfolios.find((port) => port._id === props.forPortfolio);
+      owner = p ? p.owner : {};
+    }
     this.state = {
       name: '',
-      owner: 'blank',
+      ownerOptions: props.currUser ? props.getOwnerOptions(props.currUser) : [],
+      owner,
+      portfolio: props.forPortfolio || 'blank',
     };
     this.handleFieldEdit = this.handleFieldEdit.bind(this);
     // this.handleSelect = this.handleSelect.bind(this);
@@ -21,19 +27,22 @@ export default class CreateInit extends Component {
       event.preventDefault();
     }
     const id = event.target.id;
-    this.setState({ [id]: event.target.value });
+    let value = event.target.value;
+    if (id === 'owner') {
+      value = JSON.parse(value);
+    }
+    this.setState({ [id]: value });
   }
-
-  // handleSelect(event) {
-  //   this.setState({ owner: event.target.value });
-  // }
 
   handleSubmit(event) {
     if (event && event.preventDefault) {
       event.preventDefault();
     }
-    console.log(this.state.owner);
-    this.props.create({ owner: JSON.parse(this.state.owner), name: this.state.name });
+    this.props.create({
+      dataOwner: this.state.owner,
+      name: this.state.name,
+      portId: this.state.portfolio !== 'blank' ? this.state.portfolio : null,
+    });
   }
 
   render() {
@@ -72,15 +81,39 @@ export default class CreateInit extends Component {
             <Col sm={6}>
               <FormControl
                 componentClass="select"
-                value={this.state.ownerId}
+                value={JSON.stringify(this.state.owner)}
                 onChange={this.handleFieldEdit}
                 // onChange={this.handleSelect}
               >
                 <option key="blankOption" value="blank"> -- select an option -- </option>
-                { this.props.currUser
-                  ? this.props.getOwnerOptions(this.props.currUser).map(
+                { this.state.ownerOptions.map(
                     o => <option key={o.value.id} value={JSON.stringify(o.value)}>{ o.name }</option>
                   )
+                }
+              </FormControl>
+            </Col>
+          </FormGroup>
+          <FormGroup controlId="portfolio">
+            <Col componentClass={ControlLabel} sm={2} smOffset={1}>
+              Add to Portfolio
+            </Col>
+            <Col sm={6}>
+              <FormControl
+                componentClass="select"
+                value={this.state.portfolio}
+                onChange={this.handleFieldEdit}>
+
+                <option key="blankOption" value="blank">No Portfolio</option>
+                { this.state.owner
+                  ? this.props.filterPortfoliosFor(
+                      this.props.portfolios,
+                      this.state.owner.id
+                    ).map(p =>
+                      <option
+                        key={ p.id }
+                        value={ p.id }>
+                        { p.name }
+                      </option>)
                   : ''
                 }
               </FormControl>
@@ -108,4 +141,7 @@ CreateInit.propTypes = {
   create: PropTypes.func.isRequired,
   currUser: PropTypes.object,
   getOwnerOptions: PropTypes.func.isRequired,
+  forPortfolio: PropTypes.string,
+  portfolios: PropTypes.arrayOf(PropTypes.object),
+  filterPortfoliosFor: PropTypes.func.isRequired,
 };

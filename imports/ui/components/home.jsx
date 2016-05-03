@@ -60,7 +60,7 @@ export default class Home extends Component {
           : ''
         }
 
-        <Nav bsStyle="tabs" justified activeKey={this.state.activeKey} onSelect={this.handleTabSelect}>
+        <Nav bsStyle="tabs" activeKey={this.state.activeKey} onSelect={this.handleTabSelect}>
           <NavItem eventKey={1}><h4>My Initiatives</h4></NavItem>
           <NavItem eventKey={2}><h4>My Portfolios (by Owner)</h4></NavItem>
         </Nav>

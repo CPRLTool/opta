@@ -38,18 +38,16 @@ Meteor.publish('Meteor.users.home', (_id) =>
   Meteor.users.find({ _id }, { fields: { updatedProfile: 1 } })
 );
 
-Meteor.publishTransformed('Meteor.users.searchToInviteToOrg', (org) => {
-  check(org, Organizations.schema);
-
+Meteor.publishTransformed('Meteor.users.searchToInviteToGroup', (group) => {
   // put member Ids into object for easy membership verification
   const memberIds = {};
-  for (let i = 0, l = org.members.length; i < l; i++) {
-    memberIds[org.members[i].id] = true;
+  for (let i = 0, l = group.members.length; i < l; i++) {
+    memberIds[group.members[i].id] = true;
   }
 
   return Meteor.users.find({}, { fields: defaultFields }).serverTransform({
     // extend the document with the custom property 'selectable'
-    // which checks if user is member of org
+    // which checks if user is member of group
     selectable: user => !(user._id in memberIds),
   });
 });

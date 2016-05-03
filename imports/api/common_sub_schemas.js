@@ -51,8 +51,11 @@ export const DocReferenceSchema = new SimpleSchema({
 });
 
 export const EntityWithMetricsSchema = new SimpleSchema({
+  // id: {
+  //   type: Number,
+  // },
   id: {
-    type: Number,
+    type: String,
   },
   name: {
     type: String,
@@ -65,12 +68,11 @@ export const EntityWithMetricsSchema = new SimpleSchema({
     type: Date,
     optional: true,
   },
-  order: {
-    type: Number,
-    optional: true,
-  },
+  // order: {
+  //   type: Number,
+  //   optional: true,
+  // },
   metrics: {
     type: [DocReferenceSchema],
-    minCount: 1,
   },
 });
