@@ -80,7 +80,7 @@ export default class OverviewAndStrategy extends Component {
       <p>A <strong>Strategy</strong> is...</p>
     );
     const overBody = (
-      <p>A <strong>Strategy</strong> is...</p>
+      <p>An <strong>Outcome</strong> is...</p>
     );
 
     return (
@@ -125,14 +125,14 @@ export default class OverviewAndStrategy extends Component {
               href="#"
               title="What is a Strategy?"
               body={stratBody}
-            > Strategy </TooltipExplanation>
+            ><strong> Strategy </strong></TooltipExplanation>
             for achieving the
             <TooltipExplanation
               id="outcome_tooltip"
               href="#"
               title="What is an Outcome?"
               body={overBody}
-            > Outcomes </TooltipExplanation>
+            ><strong> Outcomes </strong></TooltipExplanation>
               which you will specify next?
           </p>
           <FormGroup controlId="strategy">

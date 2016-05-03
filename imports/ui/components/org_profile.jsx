@@ -139,7 +139,7 @@ export default class OrgProfile extends Component {
             </Col>
           </FormGroup>
           <FormGroup controlId="editAndSave">
-            { this.isAd ? this.renderEditButton() : '' }
+            { isAd ? this.renderEditButton() : '' }
           </FormGroup>
         </Form>
         <br />

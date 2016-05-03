@@ -9,7 +9,7 @@ export default class CreatePort extends Component {
     super(props);
     this.state = {
       name: '',
-      owner: null,
+      owner: {},
     };
     this.handleFieldEdit = this.handleFieldEdit.bind(this);
     // this.handleSelect = this.handleSelect.bind(this);
@@ -71,7 +71,7 @@ export default class CreatePort extends Component {
             <Col sm={6}>
               <FormControl
                 componentClass="select"
-                value={this.state.owner}
+                value={JSON.stringify(this.state.owner)}
                 onChange={this.handleFieldEdit}
                 // onChange={this.handleSelect}
               >
@@ -91,7 +91,7 @@ export default class CreatePort extends Component {
               className="center-block"
               onClick={this.handleSubmit}
               bsStyle="success"
-              disabled={!this.state.name || this.state.owner === 'blank'}
+              disabled={!this.state.name || this.state.owner === '{}'}
             >
                 Create
             </Button>

@@ -46,14 +46,17 @@ export default class Home extends Component {
             <Well>
               <div className="text-center">
                 <h2>Welcome to Opta!</h2>
+                <br />
                 <p>
                   After reading this introduction, please take a moment to update <a href={`/user/${cUser.username}`}>your profile</a>.
                   Then you can click "Create" in the navigation bar up top to start a new personal OPTA initiative.
-                  If the initiative involves organizational rather than just personal data, please ensure that the corresponding
-                  organizations have been created -- you'll need to specify the data "owner" upon initiative creation so that
-                  all data collected may be correctly attributed. This allows efficient reuse across other initiatives
-                  for members of that organization. If you need to create an organization, you can the same 'Create' menu above,
-                  or do so from <a href={`/user/${cUser.username}`}>your profile</a>.
+                </p>
+                <p>
+                  If your initiative involves organizational rather than personal data, please ensure that the corresponding
+                  organizations have been created, as you'll need to specify the data "owner" upon initiative creation.
+                  This ensures efficient reuse of metrics across other initiatives for members of that organization.
+                  To create an organization, use the same 'Create' menu above, or if the organization already exists, have
+                  an admin invite you.
                 </p>
               </div>
             </Well>

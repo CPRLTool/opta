@@ -84,7 +84,7 @@ export default class TheoryOfAction extends Component {
             href="#"
             title="What is a Theory of Action?"
             body={toaBody}
-          > Theory of Action </TooltipExplanation>
+          ><strong> Theory of Action </strong></TooltipExplanation>
           for this Initiative.
         </p>
         <form>
