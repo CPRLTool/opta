@@ -18,9 +18,9 @@ Initiatives.deny({
   remove() { return true; },
 });
 
-const ActionSchema = EntityWithMetricsSchema;
+export const ActionSchema = EntityWithMetricsSchema;
 
-const OutcomeSchema = new SimpleSchema([
+export const OutcomeSchema = new SimpleSchema([
   EntityWithMetricsSchema,
   {
     actions: {
@@ -37,9 +37,9 @@ const FundSchema = new SimpleSchema({
   request: {
     type: Number,
   },
-  commitment: {
-    type: Number,
-  },
+  // commitment: {
+  //   type: Number,
+  // },
   status: {
     type: String,
     allowedValues: [
@@ -49,7 +49,7 @@ const FundSchema = new SimpleSchema({
   },
 });
 
-const InputsSchema = new SimpleSchema({
+export const InputsSchema = new SimpleSchema({
   funding: {
     type: [FundSchema],
     defaultValue: [],

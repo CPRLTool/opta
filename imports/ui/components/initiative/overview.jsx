@@ -9,7 +9,6 @@ export default class OverviewAndStrategy extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      theoryOfAction: props.initiative ? (props.initiative.theoryOfAction || '') : '',
       overview: props.initiative ? (props.initiative.overview || '') : '',
       strategy: props.initiative ? (props.initiative.strategy || '') : '',
       editing: false,
@@ -111,7 +110,7 @@ export default class OverviewAndStrategy extends Component {
               // onClick={this.toggleSave}
               bsStyle="default">
                 Upload Documents...
-            </Button>;
+            </Button>
           </div>
           <br />
           <br />

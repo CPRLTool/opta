@@ -105,6 +105,7 @@ export default class UserProfile extends Component {
                 readOnly />
             </Col>
           </FormGroup>
+          {/*
           <FormGroup controlId="email">
             <Col componentClass={ControlLabel} sm={2}>Email</Col>
             <Col sm={8}>
@@ -114,6 +115,7 @@ export default class UserProfile extends Component {
                 readOnly />
             </Col>
           </FormGroup>
+        */}
           <FormGroup controlId="firstName">
             <Col componentClass={ControlLabel} sm={2}>First Name</Col>
             <Col sm={8}>

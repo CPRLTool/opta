@@ -27,3 +27,8 @@ textarea {
 .list-inline {
   white-space: nowrap;
 }
+
+.vertical-align {
+  display: flex;
+  align-items: center;
+}

@@ -3,7 +3,8 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 // import { incrementCounter } from 'meteor/osv:mongo-counter';
 
-import { Initiatives, listOfTextFields } from './initiatives.js';
+// import { Initiatives, listOfTextFields } from './initiatives.js';
+import { Initiatives, OutcomeSchema, InputsSchema } from './initiatives.js';
 import { Organizations } from '../organizations/organizations';
 import { OwnerSchema } from '../common_sub_schemas';
 import { Random } from 'meteor/random';
@@ -38,15 +39,13 @@ export const create = new ValidatedMethod({
       }
     }
 
-    const _id = Random.id();
-    const outId = Random.id(3);
-    const actId = Random.id(3);
+    // const _id = Random.id();
     // const outCount = incrementCounter('Counters', `outsFor_${_id}`);
     // const actCount = incrementCounter('Counters', `actsFor_${_id}_out${outCount}`);
 
 
     return Initiatives.insert({
-      _id,
+      // _id,
       dataOwner,
       name,
       members: [
@@ -56,14 +55,14 @@ export const create = new ValidatedMethod({
         },
       ],
       outcomes: [{
-        id: outId,
+        id: Random.id(3),
         name: 'e.g. Improve Teacher Performance',
         description: '',
         createdAt: new Date(),
         // order: outCount,
         metrics: [],
         actions: [{
-          id: actId,
+          id: Random.id(3),
           name: 'e.g. Facilitate extra training during summer',
           description: '',
           createdAt: new Date(),
@@ -75,29 +74,29 @@ export const create = new ValidatedMethod({
   },
 });
 
-export const updateTheory = new ValidatedMethod({
-  name: 'initiatives.updateTheory',
-  validate: new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-    theoryOfAction: { type: String },
-  }).validator(),
-  run({ _id, theoryOfAction }) {
-    if (!this.userId) {
-      throw new Meteor.Error('not-authorized');
-    }
+// export const updateTheory = new ValidatedMethod({
+//   name: 'initiatives.updateTheory',
+//   validate: new SimpleSchema({
+//     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+//     theoryOfAction: { type: String },
+//   }).validator(),
+//   run({ _id, theoryOfAction }) {
+//     if (!this.userId) {
+//       throw new Meteor.Error('not-authorized');
+//     }
 
-    const init = Initiatives.findOne({ _id });
-    if (!init.editableBy(this.userId)) {
-      throw new Meteor.Error('initiatives.updateTextFields.notAuthorized',
-        'You do not have priveleges to edit this initiative.');
-    }
+//     const init = Initiatives.findOne({ _id });
+//     if (!init.editableBy(this.userId)) {
+//       throw new Meteor.Error('initiatives.updateTextFields.notAuthorized',
+//         'You do not have priveleges to edit this initiative.');
+//     }
 
-    Initiatives.update(
-      { _id },
-      { $set: { theoryOfAction } }
-    );
-  },
-});
+//     Initiatives.update(
+//       { _id },
+//       { $set: { theoryOfAction } }
+//     );
+//   },
+// });
 
 export const updateTextFields = new ValidatedMethod({
   name: 'initiatives.updateTextFields',
@@ -134,6 +133,54 @@ export const updateTextFields = new ValidatedMethod({
     Initiatives.update(
       { _id },
       { $set: updateObj }
+    );
+  },
+});
+
+export const updateOutcomes = new ValidatedMethod({
+  name: 'initiatives.updateOutcomes',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    outcomes: { type: [OutcomeSchema] },
+  }).validator(),
+  run({ _id, outcomes }) {
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const init = Initiatives.findOne({ _id });
+    if (!init.editableBy(this.userId)) {
+      throw new Meteor.Error('initiatives.updateOutcomes.notAuthorized',
+        'You do not have priveleges to edit this initiative.');
+    }
+
+    Initiatives.update(
+      { _id },
+      { $set: { outcomes } }
+    );
+  },
+});
+
+export const updateInputs = new ValidatedMethod({
+  name: 'initiatives.updateInputs',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    inputs: { type: InputsSchema },
+  }).validator(),
+  run({ _id, inputs }) {
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const init = Initiatives.findOne({ _id });
+    if (!init.editableBy(this.userId)) {
+      throw new Meteor.Error('initiatives.updateInputs.notAuthorized',
+        'You do not have priveleges to edit this initiative.');
+    }
+
+    Initiatives.update(
+      { _id },
+      { $set: { inputs } }
     );
   },
 });

@@ -1,11 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { Nav, NavItem } from 'react-bootstrap';
 
-import Settings from '../../containers/initiative/settings';
 import TheoryOfAction from './theory';
-import OverviewAndStrategy from './overview';
+// import OverviewAndStrategy from './overview';
+import Outcomes from '../../containers/initiative/outcomes';
+import Actions from './actions';
+import Inputs from '../../containers/initiative/inputs';
 
-export default class InitSetup extends Component {
+
+export default class Setup extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,17 +28,16 @@ export default class InitSetup extends Component {
     const propsToPass = { currUser, initiative, canEdit, getMembers, updateTextFields };
 
     if (this.state.activeKey === 1) {
-      return (<Settings {...propsToPass} />);
-    } else if (this.state.activeKey === 2) {
       return (<TheoryOfAction {...propsToPass} />);
+    // } else if (this.state.activeKey === 2) {
+    //   return (<OverviewAndStrategy {...propsToPass} />);
+    } else if (this.state.activeKey === 2) {
+      return (<Outcomes {...propsToPass} />);
     } else if (this.state.activeKey === 3) {
-      return (<OverviewAndStrategy {...propsToPass} />);
+      return (<Actions {...propsToPass} />);
+      // return (<p className="text-center"> Under Construction... </p>);
     } else if (this.state.activeKey === 4) {
-      return (<p className="text-center"> Under Construction... </p>);
-    } else if (this.state.activeKey === 5) {
-      return (<p className="text-center"> Under Construction... </p>);
-    } else if (this.state.activeKey === 6) {
-      return (<p className="text-center"> Under Construction... </p>);
+      return (<Inputs {...propsToPass} />);
     }
     return '';
   }
@@ -44,12 +46,11 @@ export default class InitSetup extends Component {
     return (
       <div className="container">
         <Nav bsStyle="tabs" justified activeKey={this.state.activeKey} onSelect={this.handleTabSelect}>
-          <NavItem eventKey={1}><h5>Settings</h5></NavItem>
-          <NavItem eventKey={2}><h5>Theory of Action</h5></NavItem>
-          <NavItem eventKey={3}><h5>Overview & Strategy</h5></NavItem>
-          <NavItem eventKey={4}><h5>Outcomes</h5></NavItem>
-          <NavItem eventKey={5}><h5>Actions</h5></NavItem>
-          <NavItem eventKey={6}><h5>Inputs</h5></NavItem>
+          <NavItem eventKey={1}><h4>Theory of Action</h4></NavItem>
+          {/** <NavItem eventKey={2}><h5>Overview & Strategy</h5></NavItem> **/}
+          <NavItem eventKey={2}><h4>Outcomes</h4></NavItem>
+          <NavItem eventKey={3}><h4>Strategy & Actions</h4></NavItem>
+          <NavItem eventKey={4}><h4>Inputs</h4></NavItem>
         </Nav>
         <br />
         { this.renderContent() }
@@ -58,7 +59,7 @@ export default class InitSetup extends Component {
   }
 }
 
-InitSetup.propTypes = {
+Setup.propTypes = {
   currUser: PropTypes.object,
   initiative: PropTypes.object,
   canEdit: PropTypes.func.isRequired,

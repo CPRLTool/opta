@@ -35,7 +35,7 @@ export const updateProfile = ({ _id, about }) => {
 };
 
 export const inviteMember = ({ org, user }) => {
-  inviteMemberMethod.call({ _id: org._id, inviteeId: user.id }, (err, res) => {
+  inviteMemberMethod.call({ _id: org._id, inviteeId: user._id }, (err, res) => {
     if (err) {
       Alert.error(err.message);
     } else {

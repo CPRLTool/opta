@@ -1,9 +1,9 @@
 import React from 'react';
 
-const InitDash = () => (
+const Dash = () => (
   <p className="text-center">
     Under Construction...
   </p>
 );
 
-export default InitDash;
+export default Dash;

@@ -4,13 +4,20 @@ import { FormGroup, FormControl, Button, ButtonGroup } from 'react-bootstrap';
 import TooltipExplanation from '../tooltip_explanation.jsx';
 
 
+const stratBody = (
+  <p>A <strong>Strategy</strong> is...</p>
+);
+
+const overBody = (
+  <p>An <strong>Outcome</strong> is...</p>
+);
+
 export default class TheoryOfAction extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      theoryOfAction: props.initiative ? (props.initiative.theoryOfAction || '') : '',
-      overview: props.initiative ? (props.initiative.overview || '') : '',
+      strategy: props.initiative ? (props.initiative.strategy || '') : '',
       editing: false,
       isSubmitting: false,
     };
@@ -42,8 +49,7 @@ export default class TheoryOfAction extends Component {
     this.props.updateTextFields({
       _id: this.props.initiative._id,
       fields: {
-        theoryOfAction: this.state.theoryOfAction,
-        overview: this.state.overview,
+        strategy: this.state.strategy,
       },
     });
 
@@ -85,10 +91,6 @@ export default class TheoryOfAction extends Component {
       opts.readOnly = 'readOnly';
     }
 
-    const toaBody = (
-      <p>A <strong>Theory of Action</strong> is...</p>
-    );
-
     return (
       <div>
         <form>
@@ -97,56 +99,34 @@ export default class TheoryOfAction extends Component {
           </div>
           <br />
           <div className="text-center">
-            <h4>Theory of Action</h4>
+            <h4>Strategy</h4>
           </div>
           <p>
-            In the space below, please state a detailed
+            What is your main
             <TooltipExplanation
-              id="theoryOfAction_tooltip"
+              id="strategy_tooltip"
               href="#"
-              title="What is a Theory of Action?"
-              body={toaBody}
-            ><strong> Theory of Action </strong></TooltipExplanation>
-            for this Initiative.
+              title="What is a Strategy?"
+              body={stratBody}
+            ><strong> Strategy </strong></TooltipExplanation>
+            for achieving the
+            <TooltipExplanation
+              id="outcome_tooltip"
+              href="#"
+              title="What is an Outcome?"
+              body={overBody}
+            ><strong> Outcomes </strong></TooltipExplanation>
+              you have specified?
           </p>
-          <FormGroup controlId="theoryOfAction">
-            <FormControl
-              componentClass="textarea"
-              style={{ height: 80, resize: 'none' }}
-              value={this.state.theoryOfAction}
-              onChange={this.handleFieldEdit}
-              {...opts}
-            />
-          </FormGroup>
-          <br />
-          <br />
-          <div className="text-center">
-            <h4>Overview</h4>
-          </div>
-          <p>
-            Please provide any relevant background data and information.
-          </p>
-          <FormGroup controlId="overview">
+          <FormGroup controlId="strategy">
             <FormControl
               componentClass="textarea"
               style={{ height: 120, resize: 'none' }}
-              value={this.state.overview}
+              value={this.state.strategy}
               onChange={this.handleFieldEdit}
               {...opts}
             />
           </FormGroup>
-          <div className="text-center">
-            <h5>Attached Documents</h5>
-          </div>
-          <br />
-          <div className="text-center">
-            <Button
-              className="center-block"
-              // onClick={this.toggleSave}
-              bsStyle="default">
-                Upload Documents...
-            </Button>
-          </div>
         </form>
       </div>
     );
